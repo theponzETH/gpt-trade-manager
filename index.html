@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPT Trade Manager — Guida Operativa</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #12151f;
+    --bg2:       #181c2a;
+    --bg3:       #1e2438;
+    --bg4:       #232940;
+    --accent:    #00bcd4;
+    --gold:      #dcc050;
+    --buy:       #1a5add;
+    --sell:      #c81e32;
+    --trl:       #008cb4;
+    --ssl:       #b45a00;
+    --man:       #00a08c;
+    --sep:       #2a3050;
+    --txt:       #dce4f5;
+    --txt-dim:   #7882a0;
+    --green:     #00d25a;
+    --radius:    10px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--txt);
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--bg2);
+    border-bottom: 2px solid var(--accent);
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-logo {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+  .topbar-logo span { color: var(--gold); }
+  .topbar-link {
+    font-size: 13px;
+    color: var(--txt-dim);
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    transition: color .2s;
+  }
+  .topbar-link:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0d1020 0%, #1a2040 50%, #0d1520 100%);
+    padding: 70px 40px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,188,212,.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(0,188,212,.12);
+    border: 1px solid rgba(0,188,212,.35);
+    color: var(--accent);
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 2px;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 22px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub {
+    color: var(--txt-dim);
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+  .hero-tags {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .hero-tag {
+    background: var(--bg3);
+    border: 1px solid var(--sep);
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 13px;
+    color: var(--txt-dim);
+    font-family: 'Space Mono', monospace;
+  }
+  .hero-tag b { color: var(--txt); }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── INDICE ── */
+  .toc {
+    background: var(--bg2);
+    border: 1px solid var(--sep);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin: 48px 0 40px;
+  }
+  .toc-title {
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .toc-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 6px 24px;
+  }
+  .toc-list li a {
+    color: var(--txt-dim);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .toc-list li a::before {
+    content: '→';
+    color: var(--accent);
+    font-size: 12px;
+  }
+  .toc-list li a:hover { color: var(--txt); }
+
+  /* ── SEZIONI ── */
+  .section {
+    margin-bottom: 56px;
+    scroll-margin-top: 80px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--sep);
+  }
+  .section-num {
+    background: var(--accent);
+    color: var(--bg);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--sep);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card p { color: var(--txt-dim); font-size: 14px; }
+  .card p + p { margin-top: 8px; }
+  .card strong { color: var(--txt); }
+
+  /* ── PROFILI BOTTONI ── */
+  .profiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .profile-card {
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    border: 1px solid transparent;
+  }
+  .profile-card.hft  { background: rgba(25,90,220,.15);  border-color: rgba(25,90,220,.4);  }
+  .profile-card.trl  { background: rgba(0,140,180,.15);  border-color: rgba(0,140,180,.4);  }
+  .profile-card.ssl  { background: rgba(180,90,0,.15);   border-color: rgba(180,90,0,.4);   }
+  .profile-card.man  { background: rgba(0,160,140,.15);  border-color: rgba(0,160,140,.4);  }
+  .profile-name {
+    font-size: 13px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .profile-card.hft  .profile-name { color: #5a8aff; }
+  .profile-card.trl  .profile-name { color: #00bcd4; }
+  .profile-card.ssl  .profile-name { color: #ffaa44; }
+  .profile-card.man  .profile-name { color: #00d4b8; }
+  .profile-desc { font-size: 13px; color: var(--txt-dim); }
+
+  /* ── PARAMETRI TABLE ── */
+  .param-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 16px;
+  }
+  .param-table th {
+    background: var(--bg3);
+    color: var(--txt-dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--sep);
+  }
+  .param-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(42,48,80,.5);
+    vertical-align: top;
+  }
+  .param-table tr:last-child td { border-bottom: none; }
+  .param-table tr:hover td { background: rgba(255,255,255,.02); }
+  .param-name {
+    font-family: 'Space Mono', monospace;
+    color: var(--accent);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .param-default {
+    color: var(--gold);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+  }
+  .param-desc { color: var(--txt-dim); }
+  .param-desc strong { color: var(--txt); }
+
+  /* ── BOTTONI SIMULATI ── */
+  .btn-demo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 14px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    margin: 3px;
+    cursor: default;
+    letter-spacing: .5px;
+  }
+  .btn-hft-buy   { background: #1a5add; color: #fff; }
+  .btn-hft-sell  { background: #c81e32; color: #fff; }
+  .btn-trl-buy   { background: #008cb4; color: #fff; }
+  .btn-trl-sell  { background: #b43c50; color: #fff; }
+  .btn-ssl-buy   { background: #b45a00; color: #fff; }
+  .btn-ssl-sell  { background: #780090; color: #fff; }
+  .btn-man-buy   { background: #00a08c; color: #fff; }
+  .btn-man-sell  { background: #a01e8c; color: #fff; }
+  .btn-ctrl      { background: #323850; color: #dce4f5; }
+  .btn-ts-on     { background: #b48c00; color: #fff5a0; }
+  .btn-close     { background: #2d3246; color: #dce4f5; }
+  .btn-confirm   { background: #c86400; color: #fff; }
+
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 12px 0;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14px;
+  }
+  .callout-info  { background: rgba(0,188,212,.08); border: 1px solid rgba(0,188,212,.25); }
+  .callout-warn  { background: rgba(220,192,80,.08); border: 1px solid rgba(220,192,80,.3); }
+  .callout-tip   { background: rgba(0,210,90,.08);  border: 1px solid rgba(0,210,90,.25);  }
+  .callout-icon  { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .callout-body  { color: var(--txt-dim); }
+  .callout-body strong { color: var(--txt); }
+
+  /* ── STEP LIST ── */
+  .steps { list-style: none; margin: 16px 0; }
+  .steps li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(42,48,80,.4);
+  }
+  .steps li:last-child { border-bottom: none; }
+  .step-num {
+    background: var(--bg3);
+    border: 1px solid var(--sep);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body { font-size: 14px; color: var(--txt-dim); }
+  .step-body strong { color: var(--txt); }
+
+  /* ── FAQ ── */
+  .faq-item {
+    border: 1px solid var(--sep);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .faq-q {
+    background: var(--bg2);
+    padding: 16px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background .2s;
+  }
+  .faq-q:hover { background: var(--bg3); }
+  .faq-q::after { content: '+'; color: var(--accent); font-size: 20px; font-weight: 300; }
+  .faq-item.open .faq-q::after { content: '−'; }
+  .faq-a {
+    display: none;
+    padding: 16px 20px;
+    background: var(--bg);
+    font-size: 14px;
+    color: var(--txt-dim);
+    border-top: 1px solid var(--sep);
+  }
+  .faq-a strong { color: var(--txt); }
+  .faq-item.open .faq-a { display: block; }
+
+  /* ── TRAILING DIAGRAM ── */
+  .trail-diagram {
+    background: var(--bg);
+    border: 1px solid var(--sep);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--txt-dim);
+    overflow-x: auto;
+    margin: 16px 0;
+    line-height: 2;
+  }
+  .trail-diagram .price  { color: var(--accent); }
+  .trail-diagram .sl     { color: #ff6060; }
+  .trail-diagram .arrow  { color: var(--gold); }
+  .trail-diagram .note   { color: var(--green); }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--sep);
+    padding: 32px 40px;
+    text-align: center;
+    color: var(--txt-dim);
+    font-size: 13px;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ── MISC ── */
+  code {
+    background: var(--bg3);
+    border: 1px solid var(--sep);
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid var(--sep);
+    margin: 40px 0;
+  }
+
+  @media (max-width: 640px) {
+    .topbar { padding: 14px 20px; }
+    .hero   { padding: 50px 20px 40px; }
+    .container { padding: 0 16px 60px; }
+    .toc    { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">GPT <span>Trade Manager</span></div>
+  <a class="topbar-link" href="https://gpttrading.info" target="_blank">gpttrading.info ↗</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">GUIDA OPERATIVA — PRIMA INSTALLAZIONE</div>
+  <h1>Benvenuto su<br><span>GPT Trade Manager</span></h1>
+  <p class="hero-sub">Tutto quello che devi sapere per usarlo al massimo delle sue potenzialità, dal primo avvio.</p>
+  <div class="hero-tags">
+    <div class="hero-tag">✅ <b>Semplice</b></div>
+    <div class="hero-tag">🔒 <b>Preciso</b></div>
+    <div class="hero-tag">⚡ <b>Reattivo</b></div>
+    <div class="hero-tag">📊 <b>Multi-profilo</b></div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+  <!-- INDICE -->
+  <div class="toc">
+    <div class="toc-title">INDICE</div>
+    <ul class="toc-list">
+      <li><a href="#s1">1 — Panoramica del Pannello</a></li>
+      <li><a href="#s2">2 — I 4 Profili Operativi</a></li>
+      <li><a href="#s3">3 — Aprire un Ordine</a></li>
+      <li><a href="#s4">4 — Trailing System</a></li>
+      <li><a href="#s5">5 — Bottoni di Controllo</a></li>
+      <li><a href="#s6">6 — Chiudere le Posizioni</a></li>
+      <li><a href="#s7">7 — Dashboard Statistiche</a></li>
+      <li><a href="#s8">8 — Parametri Consigliati</a></li>
+      <li><a href="#s9">9 — Domande Frequenti</a></li>
+    </ul>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title">Panoramica del Pannello</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📐 Come è strutturato</div>
+      <p>Il pannello si divide in <strong>5 fasce verticali</strong>, una per profilo operativo, più una fascia controlli in fondo. Tutto è accessibile con un click direttamente sul grafico.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🟦 Fascia HFT — Blu</div>
+      <p>10 bottoni (5 BUY + 5 SELL) per operatività ad alta frequenza. Trailing aggressivo, BE rapido.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🩵 Fascia TRL — Azzurro</div>
+      <p>10 bottoni per operatività swing/trend following. Trailing ampio, BE ritardato.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🟠 Fascia SSL — Arancio</div>
+      <p>10 bottoni che aprono ordini <strong>con Stop Loss fisso automatico</strong> impostato all'apertura. Ideale per chi vuole protezione immediata senza intervento manuale.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🟢 Fascia § Manual — Verde</div>
+      <p>10 bottoni per ordini "liberi" senza BE/TS automatico. Gestione completamente manuale, con possibilità di attivare il BreakEven tramite bottone dedicato.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">⚙️ Fascia Controlli</div>
+      <p>Bottoni per BreakEven globale, Trailing ON/OFF, NoComm, Pair mode, simboli custom, chiusura posizioni e reset statistiche.</p>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title">I 4 Profili Operativi</div>
+    </div>
+
+    <div class="profiles">
+      <div class="profile-card hft">
+        <div class="profile-name">HFT</div>
+        <div class="profile-desc">Scalping veloce. BE e TS con soglie basse, distanza SL stretta. Ogni pip conta.</div>
+      </div>
+      <div class="profile-card trl">
+        <div class="profile-name">TRL</div>
+        <div class="profile-desc">Trend following. BE e TS con soglie ampie, lascia respirare il trade.</div>
+      </div>
+      <div class="profile-card ssl">
+        <div class="profile-name">SSL</div>
+        <div class="profile-desc">Apre con SL fisso automatico. Poi BE e TS identici agli altri profili.</div>
+      </div>
+      <div class="profile-card man">
+        <div class="profile-name">§ MANUAL</div>
+        <div class="profile-desc">Nessun automatismo. Gestisci tutto a mano, con BreakEven on-demand.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">Ogni profilo ha il suo <strong>MagicNumber indipendente</strong>. Puoi usarli tutti e quattro contemporaneamente sullo stesso grafico senza conflitti.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title">Aprire un Ordine</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🖱️ Click e via</div>
+      <p>Ogni bottone BUY/SELL mostra il profilo e il lottaggio configurato. <strong>Un click = un ordine aperto</strong> al prezzo di mercato corrente con lo slippage impostato.</p>
+    </div>
+
+    <div class="btn-row">
+      <span class="btn-demo btn-hft-buy">HFT BUY 0.01</span>
+      <span class="btn-demo btn-hft-buy">HFT BUY 0.02</span>
+      <span class="btn-demo btn-hft-sell">HFT SELL 0.01</span>
+      <span class="btn-demo btn-hft-sell">HFT SELL 0.02</span>
+    </div>
+    <div class="btn-row">
+      <span class="btn-demo btn-ssl-buy">SSL BUY 0.01</span>
+      <span class="btn-demo btn-ssl-buy">SSL BUY 0.02</span>
+      <span class="btn-demo btn-ssl-sell">SSL SELL 0.01</span>
+      <span class="btn-demo btn-ssl-sell">SSL SELL 0.02</span>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body"><strong>SSL</strong>: all'apertura viene impostato automaticamente uno SL fisso di <code>SSLStopLossPips</code> pips dal prezzo di entrata. Non devi fare nulla — è già protetto dal primo tick.</div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <div class="card-title">🌐 Simboli Custom (CUSTSYM / CUSTSYM2)</div>
+      <p>Vuoi aprire ordini su un simbolo diverso da quello del grafico corrente? Scrivi il simbolo nella casella di testo sotto il bottone CUSTSYM (es. <code>XAUUSD</code>), poi clicca il bottone per attivarlo. Da quel momento tutti gli ordini verranno aperti su quel simbolo.</p>
+      <p style="margin-top:8px"><strong>CUSTSYM e CUSTSYM2 sono mutuamente esclusivi</strong>: attivarne uno disattiva automaticamente l'altro.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔀 Pair THIS / Pair ALL</div>
+      <p><strong>Pair THIS</strong> (default): il pannello gestisce solo gli ordini sul simbolo del grafico corrente.<br>
+      <strong>Pair ALL</strong>: gestisce tutti gli ordini aperti su qualsiasi simbolo — BE, TS, chiusure e statistiche includono tutto.</p>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title">Trailing System</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚡ Come funziona il Trailing Puro</div>
+      <p>Il sistema non si basa su scalini fissi ancorati al prezzo di apertura. Lo SL è sempre a una <strong>distanza fissa dal prezzo corrente</strong>, aggiornato ad ogni tick. Quando il prezzo avanza, lo SL avanza. Quando il prezzo torna indietro, lo SL rimane fermo.</p>
+    </div>
+
+    <div class="trail-diagram">
+<span class="note">// Esempio BUY — TS_StepMovePips = 5 pips</span>
+<span class="arrow">→</span> Prezzo: <span class="price">1.08500</span>  SL: <span class="sl">1.08495</span>  <span class="note">← trailing parte</span>
+<span class="arrow">→</span> Prezzo: <span class="price">1.08510</span>  SL: <span class="sl">1.08505</span>  <span class="note">↑ SL avanza</span>
+<span class="arrow">→</span> Prezzo: <span class="price">1.08520</span>  SL: <span class="sl">1.08515</span>  <span class="note">↑ SL avanza</span>
+<span class="arrow">→</span> Prezzo: <span class="price">1.08516</span>  SL: <span class="sl">1.08515</span>  <span class="note">← SL fermo (non arretra)</span>
+<span class="arrow">→</span> Prezzo: <span class="price">1.08514</span>  SL: <span class="sl">1.08515</span>  <span class="note">← TRADE CHIUSO a +15 pips</span>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🛡️ Break Even + Trailing Unificati</div>
+      <p>BE e TS vengono calcolati <strong>nello stesso tick</strong> e inviati al broker con <strong>una sola OrderModify</strong>. Zero latenza di transizione tra i due sistemi.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📡 SpreadProtection</div>
+      <p>Quando abilitata, lo spread corrente viene aggiunto automaticamente alla distanza SL. Se il tuo broker allarga lo spread su una news da 1 a 4 pips, la distanza del trailing si allarga di conseguenza — il trade non viene stoppato dallo spread ma solo da un vero movimento di prezzo.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏠 Floor sul Prezzo di Apertura</div>
+      <p>Lo SL impostato da BE e TS non scende <strong>mai sotto il prezzo di apertura</strong> (per i BUY) né sopra (per i SELL). Protezione automatica contro loss da gap notturni.</p>
+    </div>
+
+    <table class="param-table">
+      <thead>
+        <tr>
+          <th>PARAMETRO</th>
+          <th>SIGNIFICATO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="param-name">BE_TriggerPips</span></td>
+          <td class="param-desc">Dopo quanti pips di profitto scatta il Break Even</td>
+        </tr>
+        <tr>
+          <td><span class="param-name">BE_OffsetPips</span></td>
+          <td class="param-desc">Di quanti pips oltre l'apertura viene messo lo SL al BE</td>
+        </tr>
+        <tr>
+          <td><span class="param-name">TS_StartPips</span></td>
+          <td class="param-desc">Dopo quanti pips di profitto inizia il trailing</td>
+        </tr>
+        <tr>
+          <td><span class="param-name">TS_StepMovePips</span></td>
+          <td class="param-desc"><strong>Distanza fissa</strong> in pips tra prezzo corrente e SL</td>
+        </tr>
+        <tr>
+          <td><span class="param-name">SpreadProtection</span></td>
+          <td class="param-desc">Aggiunge lo spread corrente alla distanza SL (true/false)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-tip">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body"><strong>Vuoi il trailing senza BE?</strong> Imposta <code>BE_TriggerPips</code> a <code>99999</code>. Il BE non scatterà mai e il trailing partirà da solo appena raggiungi <code>TS_StartPips</code>.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title">Bottoni di Controllo</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚡ TS ON / TS OFF</div>
+      <p>Attiva o disattiva il trailing system su <strong>tutti i trade gestiti</strong> in tempo reale. Il Break Even continua a funzionare anche con TS OFF. Lo stato viene salvato in una variabile globale di MT4 — sopravvive al cambio di timeframe e al ricaricamento dell'indicatore.</p>
+      <div class="btn-row">
+        <span class="btn-demo btn-ts-on">TS ON</span>
+        <span class="btn-demo btn-ctrl">TS OFF</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎯 BREAKEVEN</div>
+      <p>Forza il BreakEven su tutti i trade HFT, TRL, SSL e AltMagic aperti e in profitto, in un click. Usa l'offset configurato per ogni profilo.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎯 BREAKEVEN §</div>
+      <p>Stesso funzionamento ma solo sui trade del profilo Manual (§). Offset configurabile separatamente con <code>BreakevenManualPips</code>.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔄 NoComm</div>
+      <p>Gestisce i trade aperti da EA esterni <strong>senza commento</strong>, assegnandoli a un profilo specifico. Cicla tra 4 stati:</p>
+      <ul style="margin-top:10px; padding-left:20px; font-size:14px; color:var(--txt-dim); line-height:2">
+        <li><strong style="color:var(--txt)">NoComm §</strong> — trattati come Manual</li>
+        <li><strong style="color:var(--txt)">NoComm TRL</strong> — trattati come TRL</li>
+        <li><strong style="color:var(--txt)">NoComm HFT</strong> — trattati come HFT</li>
+        <li><strong style="color:var(--txt)">NoComm SSL</strong> — trattati come SSL, con SL fisso applicato automaticamente se mancante</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔃 RESET STAT</div>
+      <p>Azzera tutti i contatori delle statistiche e imposta un nuovo punto di partenza. Utile per separare sessioni di trading diverse nella stessa giornata.</p>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div class="section-title">Chiudere le Posizioni</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔴 Sistema di Conferma Anti-Accidentale</div>
+      <p>I bottoni di chiusura richiedono <strong>doppio click</strong> per evitare chiusure accidentali. Al primo click il bottone diventa arancione con "! CONFERMI?" — hai <strong>5 secondi</strong> per confermare. Dopo 5 secondi senza risposta si resetta automaticamente.</p>
+      <div class="btn-row">
+        <span class="btn-demo btn-close">CLOSE ALL</span>
+        <span class="btn-demo" style="background:#1a5a28;color:#fff">CLOSE ALL BUY</span>
+        <span class="btn-demo" style="background:#6e1422;color:#fff">CLOSE ALL SELL</span>
+      </div>
+      <div class="btn-row">
+        <span class="btn-demo btn-confirm">! CONFERMI?</span>
+      </div>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">I bottoni di chiusura agiscono solo sui trade <strong>gestiti dal pannello</strong> (per MagicNumber e simbolo). Trade aperti da altri strumenti non vengono toccati.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div class="section-title">Dashboard Statistiche</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 Cosa mostra</div>
+      <p>Il pannello statistiche sotto i bottoni si aggiorna ogni 3 secondi e mostra in tempo reale:</p>
+      <ul style="margin-top:12px; padding-left:20px; font-size:14px; color:var(--txt-dim); line-height:2.2">
+        <li><strong style="color:var(--txt)">Trade aperti</strong> nella sessione corrente</li>
+        <li><strong style="color:var(--txt)">Trade chiusi</strong> nella sessione corrente</li>
+        <li><strong style="color:var(--txt)">Modifiche SL</strong> automatiche eseguite dal sistema</li>
+        <li><strong style="color:var(--txt)">Modifiche TP</strong> rilevate</li>
+        <li><strong style="color:var(--txt)">Totale per profilo</strong>: HFT / TRL / SSL / § / NoComm</li>
+        <li><strong style="color:var(--txt)">Lotti BUY e SELL</strong> aperti con indicatore visivo del lato dominante</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚖️ Offset Lotti</div>
+      <p>Hai posizioni aperte su un altro broker o conto che vuoi includere nel calcolo dell'esposizione? Inserisci i lotti nelle caselle offset BUY/SELL — vengono sommati ai lotti reali nel display.</p>
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">Le statistiche si riferiscono alla <strong>sessione corrente</strong> (dall'apertura MT4 o dall'ultimo RESET STAT). Usa RESET STAT per ripartire da zero in qualsiasi momento.</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div class="section-title">Parametri Consigliati per Iniziare</div>
+    </div>
+
+    <div class="callout callout-tip">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body">Questi sono valori di partenza bilanciati. <strong>Ogni trader ha il suo stile</strong> — sperimenta e adatta. Per un set file personalizzato sul tuo stile operativo, contattaci su <a href="https://gpttrading.info" style="color:var(--accent)">gpttrading.info</a>.</div>
+    </div>
+
+    <table class="param-table">
+      <thead>
+        <tr>
+          <th>PROFILO</th>
+          <th>BE_Trigger</th>
+          <th>BE_Offset</th>
+          <th>TS_Start</th>
+          <th>TS_StepMov</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="param-name" style="color:#5a8aff">HFT</span></td>
+          <td class="param-default">5</td>
+          <td class="param-default">2</td>
+          <td class="param-default">5</td>
+          <td class="param-default">5</td>
+        </tr>
+        <tr>
+          <td><span class="param-name" style="color:#00bcd4">TRL</span></td>
+          <td class="param-default">50</td>
+          <td class="param-default">20</td>
+          <td class="param-default">50</td>
+          <td class="param-default">20</td>
+        </tr>
+        <tr>
+          <td><span class="param-name" style="color:#ffaa44">SSL</span></td>
+          <td class="param-default">40</td>
+          <td class="param-default">20</td>
+          <td class="param-default">40</td>
+          <td class="param-default">15</td>
+        </tr>
+        <tr>
+          <td><span class="param-name" style="color:#00d4b8">AltMagic</span></td>
+          <td class="param-default">60</td>
+          <td class="param-default">40</td>
+          <td class="param-default">60</td>
+          <td class="param-default">25</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="card" style="margin-top:20px">
+      <div class="card-title">🔒 SpreadProtection</div>
+      <p>Lasciala su <code>true</code> sempre. L'unico caso in cui disattivarla è se operi su un broker ECN con spread fississimo (0.0 pips) dove lo spread non causa mai problemi.</p>
+    </div>
+  </div>
+
+  <!-- S9 -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">09</div>
+      <div class="section-title">Domande Frequenti</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Il pannello non appare sul grafico — cosa faccio?</div>
+      <div class="faq-a">Assicurati che il file sia compilato correttamente nel MetaEditor (nessun errore in rosso). Verifica che <strong>AutoTrading sia abilitato</strong> in MT4 (pulsante verde in alto). Controlla che il file sia nella cartella <code>MQL4/Indicators/</code> e non in <code>Experts/</code>.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Posso usare GPT Trade Manager su più grafici contemporaneamente?</div>
+      <div class="faq-a">Sì, ma <strong>assicurati che i MagicNumber siano diversi</strong> per ogni istanza, altrimenti i pannelli potrebbero interferire nella gestione degli ordini. Configura MagicNumberRows12, MagicNumberRows34, SSLMagicNumber e ManualMagicNumber con valori unici per ogni grafico.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Il trailing sembra troppo aggressivo e mi chiude i trade subito — come regolo?</div>
+      <div class="faq-a">Aumenta <code>TS_StepMovePips</code> — è la distanza in pips tra il prezzo e lo SL. Con 5 pips il trailing è molto stretto; prova 10-15 pips per dare più respiro. Tieni conto dello spread del tuo broker: su coppie con spread di 2 pips, una distanza di 5 pips equivale a soli 3 pips netti.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Voglio usare solo il trailing senza Break Even automatico — è possibile?</div>
+      <div class="faq-a">Sì. Imposta <code>BE_TriggerPips</code> a <code>99999</code>. Il BE non scatterà mai nella pratica e il trailing gestirà tutto da solo a partire da <code>TS_StartPips</code>.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Ho un EA che apre trade senza commento — come li gestisco?</div>
+      <div class="faq-a">Usa il bottone <strong>NoComm</strong> nella fascia controlli. Cliccalo fino al profilo desiderato (§, TRL, HFT o SSL). Da quel momento tutti i trade senza commento verranno gestiti con i parametri di quel profilo. Se scegli SSL, viene applicato automaticamente lo SL fisso iniziale ai trade che ne sono sprovvisti.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Il bottone CUSTSYM non si attiva — perché?</div>
+      <div class="faq-a">Il simbolo deve essere presente nel <strong>Market Watch</strong> di MT4. Fai click destro sul Market Watch → Mostra tutto, oppure cerca il simbolo e aggiungilo manualmente. Poi scrivi il nome esatto (es. <code>XAUUSD</code> o <code>XAUUSD.r</code> a seconda del broker) e clicca CUSTSYM.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Posso richiedere un set file personalizzato?</div>
+      <div class="faq-a">Sì. Visita <a href="https://gpttrading.info" style="color:var(--accent)"><strong>gpttrading.info</strong></a> per ricevere supporto diretto e set file ottimizzati per il tuo stile operativo e broker.</div>
+    </div>
+
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <p style="margin-bottom:8px">
+    <strong style="color:var(--txt)">GPT Trade Manager</strong> — Sviluppato da theponz.eth
+  </p>
+  <p>
+    Supporto e aggiornamenti: <a href="https://gpttrading.info" target="_blank">gpttrading.info</a>
+  </p>
+</div>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if(!wasOpen) item.classList.add('open');
+    });
+  });
+
+  // Smooth scroll per indice
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if(target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
