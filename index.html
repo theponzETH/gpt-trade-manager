@@ -320,7 +320,7 @@ footer a{color:var(--accent);text-decoration:none}
 
   <!-- INTRO -->
   <h2 id="intro">Introduzione</h2>
-  <p>Il GPT Trade Manager è un <strong>indicatore MQ4</strong> che si carica su qualsiasi grafico di MT4 e aggiunge un pannello grafico interattivo nell'angolo superiore sinistro. Da lì puoi aprire e chiudere ordini, attivare il trailing stop, impostare il break-even e leggere le statistiche della sessione — senza usare i menu di MT4.</p>
+  <p>Il GPT Trade Manager è un <strong>Expert Advisor MQ4</strong> che si carica su qualsiasi grafico di MT4 e aggiunge un pannello grafico interattivo nell'angolo superiore sinistro. Da lì puoi aprire e chiudere ordini, attivare il trailing stop, impostare il break-even e leggere le statistiche della sessione — senza usare i menu di MT4.</p>
   <p>È pensato per chi opera in modo <strong>semi-manuale</strong>: tu decidi quando e in quale direzione entrare, il tool si occupa di gestire gli ordini aperti automaticamente secondo le regole che hai configurato.</p>
 
   <div class="card info">
@@ -339,14 +339,14 @@ footer a{color:var(--accent);text-decoration:none}
   <h2 id="requisiti">Requisiti</h2>
   <ul class="checklist">
     <li><strong>MetaTrader 4</strong> — qualsiasi broker</li>
-    <li><strong>File GPTTradeManager.mq4</strong> — compilato o come sorgente</li>
+    <li><strong>Account MQL5</strong> — gratuito, necessario per acquistare dal Market</li>
     <li>Connessione internet attiva sul PC con MT4 aperto</li>
     <li>(Opzionale) App <strong>MetaTrader 4 su smartphone</strong> per le notifiche push</li>
   </ul>
 
   <div class="callout">
     <span class="icon">⚠️</span>
-    <div>Il tool funziona come <strong>indicatore</strong>, non come EA. Non richiede che il trading algoritmico sia abilitato nella configurazione del broker. È comunque necessario che il grafico su cui lo carichi sia aggiornato (tick in arrivo).</div>
+    <div>Il tool funziona come <strong>Expert Advisor (EA)</strong>. Richiede che il <strong>trading automatico sia abilitato</strong> in MT4 (pulsante verde nella toolbar). È comunque necessario che il grafico su cui lo carichi sia aggiornato (tick in arrivo).</div>
   </div>
 
   <!-- INSTALLAZIONE -->
@@ -355,36 +355,36 @@ footer a{color:var(--accent);text-decoration:none}
     <li>
       <div class="step-num">1</div>
       <div class="step-content">
-        <strong>Copia il file nella cartella giusta</strong>
-        <p>In MT4 vai su <em>File → Apri cartella dati</em>. Si apre una finestra di Windows. Entra nella cartella <code>MQL4 → Indicators</code> e copia lì dentro il file <code>GPTTradeManager.mq4</code>.</p>
+        <strong>Acquista dal Market MQL5</strong>
+        <p>Cerca <strong>GPT Trade Manager</strong> sul <a href="https://www.mql5.com/en/market">Market di MQL5</a> e completa l'acquisto. L'EA viene associato al tuo account MQL5.</p>
       </div>
     </li>
     <li>
       <div class="step-num">2</div>
       <div class="step-content">
-        <strong>Compila (se necessario)</strong>
-        <p>Se hai il file sorgente <code>.mq4</code>, apri il MetaEditor (tasto F4 in MT4), cerca il file nel Navigator, fai doppio click e premi F7 per compilare. Se hai già il <code>.ex4</code> compilato, salta questo passaggio.</p>
+        <strong>Accedi con il tuo account MQL5 in MT4</strong>
+        <p>In MT4 vai su <em>Strumenti → Opzioni → Community</em> e inserisci le credenziali del tuo account MQL5. Questo permette a MT4 di riconoscere i prodotti acquistati.</p>
       </div>
     </li>
     <li>
       <div class="step-num">3</div>
       <div class="step-content">
-        <strong>Ricarica gli indicatori in MT4</strong>
-        <p>Torna su MT4 e nel pannello Navigator (Ctrl+N), fai click destro su <em>Indicatori</em> e seleziona <em>Aggiorna</em>. Il GPT Trade Manager apparirà nella lista.</p>
+        <strong>Scarica dal pannello Navigator</strong>
+        <p>Apri il Navigator in MT4 (Ctrl+N), vai su <em>Expert Advisor → Market</em>. Trovi il GPT Trade Manager tra i prodotti acquistati. Fai click destro e seleziona <em>Scarica</em> — il file <code>.ex4</code> viene installato automaticamente.</p>
       </div>
     </li>
     <li>
       <div class="step-num">4</div>
       <div class="step-content">
         <strong>Carica sul grafico</strong>
-        <p>Trascina l'indicatore su un grafico aperto (qualsiasi simbolo, qualsiasi timeframe). Appare la finestra degli input. Puoi lasciarli come default per iniziare. Clicca OK.</p>
+        <p>Trascina l'EA su un grafico aperto (qualsiasi simbolo, qualsiasi timeframe). Appare la finestra degli input — puoi lasciarli come default per iniziare. Clicca OK.</p>
       </div>
     </li>
     <li>
       <div class="step-num">5</div>
       <div class="step-content">
         <strong>Il pannello appare in alto a sinistra</strong>
-        <p>Se vedi il pannello come nell'immagine sotto, l'installazione è riuscita. Se il pannello non appare, verifica che la compilazione sia andata a buon fine (nessun errore rosso nel MetaEditor).</p>
+        <p>Se vedi il pannello come nell'immagine sotto, sei pronto. Nessuna configurazione aggiuntiva richiesta per iniziare a usarlo.</p>
       </div>
     </li>
   </ul>
@@ -406,7 +406,7 @@ footer a{color:var(--accent);text-decoration:none}
     <div class="btn-item bi-ctrl"><div class="lbl">Controlli</div><p>Righe finali: BREAKEVEN, NoComm, TS, CLOSE ALL…</p></div>
   </div>
 
-  <p>Ogni zona ha <strong>5 bottoni BUY e 5 bottoni SELL</strong>, corrispondenti ai 5 lottaggi configurabili in input. I numeri sui bottoni (0.01, 0.02…) si aggiornano automaticamente se cambi i valori negli input senza ricaricare l'indicatore.</p>
+  <p>Ogni zona ha <strong>5 bottoni BUY e 5 bottoni SELL</strong>, corrispondenti ai 5 lottaggi configurabili in input. I numeri sui bottoni (0.01, 0.02…) si aggiornano automaticamente se cambi i valori negli input senza ricaricare l'EA.</p>
 
   <!-- BOTTONI TRADING -->
   <h2 id="bottoni-trading">Come aprire un ordine</h2>
@@ -661,7 +661,7 @@ footer a{color:var(--accent);text-decoration:none}
   </div>
   <div class="callout">
     <span class="icon">⚠️</span>
-    <div>Una volta scattato l'Equity Stop, il pannello mostra <strong style="color:var(--red)">EQUITY STOP ATTIVO</strong> e non permette più nuovi ordini finché non ricarichi l'indicatore.</div>
+    <div>Una volta scattato l'Equity Stop, il pannello mostra <strong style="color:var(--red)">EQUITY STOP ATTIVO</strong> e non permette più nuovi ordini finché non ricarichi l'EA.</div>
   </div>
 
   <!-- STATISTICHE -->
@@ -726,13 +726,13 @@ footer a{color:var(--accent);text-decoration:none}
   <h2 id="faq">FAQ</h2>
 
   <h3>Il pannello non appare dopo l'installazione</h3>
-  <p>Verifica che la compilazione nel MetaEditor non abbia errori (tab <em>Errors</em> in basso). Se ci sono errori, il file <code>.ex4</code> non viene generato e l'indicatore non può partire.</p>
+  <p>Verifica di essere loggato con il tuo account MQL5 in MT4 (<em>Strumenti → Opzioni → Community</em>). Se l'EA risulta già installato nel Navigator ma il pannello non appare, prova a rimuoverlo dal grafico e a caricarlo nuovamente come EA.</p>
 
   <h3>I bottoni non rispondono al click</h3>
-  <p>Assicurati che il trading automatico sia abilitato in MT4 (pulsante verde nella toolbar in alto). L'indicatore ha bisogno del permesso di inviare ordini. Vai anche su <em>Strumenti → Opzioni → Expert Advisors</em> e abilita il trading degli EA/Indicatori.</p>
+  <p>Assicurati che il trading automatico sia abilitato in MT4 (pulsante verde nella toolbar in alto). Vai su <em>Strumenti → Opzioni → Expert Advisors</em> e abilita il trading degli EA. Verifica anche che il tasto <strong>AutoTrading</strong> nella toolbar sia verde.</p>
 
   <h3>Ho cambiato un lottaggio in input ma il bottone non si aggiorna</h3>
-  <p>I lottaggi si aggiornano automaticamente al tick successivo, senza ricaricare l'indicatore. Su simboli poco movimentati potrebbe volerci qualche secondo.</p>
+  <p>I lottaggi si aggiornano automaticamente al tick successivo, senza ricaricare l'EA. Su simboli poco movimentati potrebbe volerci qualche secondo.</p>
 
   <h3>Il trailing stop non si muove</h3>
   <p>Controlla che il pulsante <strong>TS ON</strong> sia attivo (giallo). Se è grigio con scritta TS OFF, il trailing è disattivato globalmente. Verifica anche che il trade abbia raggiunto la soglia <code>TS_StartPips</code>.</p>
