@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPT Trade Manager v1.35 — by theponz.eth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0a0c0f;
+    --bg2:     #10131a;
+    --bg3:     #161b24;
+    --border:  rgba(255,255,255,0.07);
+    --border-hi: rgba(255,255,255,0.14);
+    --accent:  #00e5a0;
+    --accent2: #0089ff;
+    --accent3: #ff6b35;
+    --text:    #e8eaf0;
+    --muted:   #7a8094;
+    --dim:     #3d4255;
+    --card-bg: #111520;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.75;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 2rem 0.5rem;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,229,160,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,137,255,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,229,160,0.08);
+    border: 1px solid rgba(0,229,160,0.25);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+
+  .badge .dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .hero h1 span.gpt { color: var(--accent); }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--muted);
+    max-width: 560px;
+    font-weight: 400;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  section { padding: 2.5rem 0; }
+  section + section { border-top: 1px solid var(--border); }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-lead {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+  }
+
+  /* ── PROFILES ── */
+  .profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .profile-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: background 0.2s;
+  }
+
+  .profile-card:hover { background: var(--bg3); }
+
+  .profile-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    width: fit-content;
+  }
+
+  .tag-hft    { background: rgba(0,229,160,0.12);   color: var(--accent); }
+  .tag-trl    { background: rgba(0,137,255,0.12);   color: var(--accent2); }
+  .tag-ssl    { background: rgba(255,107,53,0.12);  color: var(--accent3); }
+  .tag-manual { background: rgba(255,255,255,0.07); color: var(--muted); }
+  .tag-manualtp{ background: rgba(122,128,148,0.15); color: #a0a8c0; }
+  .tag-manualsl{ background: rgba(200,150,20,0.15);  color: #d4a017; }
+  .tag-lf      { background: rgba(255,200,0,0.12);   color: #ffc800; }
+
+  .profile-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+
+  .profile-desc {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .profile-detail {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    line-height: 1.8;
+  }
+
+  .profile-detail span { color: var(--muted); }
+
+  /* ── FEATURES ── */
+  .features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .feature-row {
+    background: var(--card-bg);
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2rem;
+    padding: 1.75rem 2rem;
+    transition: background 0.2s;
+  }
+
+  .feature-row:hover { background: var(--bg3); }
+
+  .feature-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding-top: 2px;
+  }
+
+  .feature-name .icon {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .feature-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .feature-desc strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── CONTROLS ── */
+  .controls-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+
+  .ctrl-card.wide { grid-column: span 2; }
+
+  .ctrl-card {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+
+  .ctrl-card:hover { background: var(--bg3); }
+
+  .ctrl-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 5px 10px;
+    border-radius: 4px;
+    width: fit-content;
+    margin-bottom: 4px;
+  }
+
+  .btn-green  { background: rgba(0,229,160,0.12);  color: var(--accent);  border: 1px solid rgba(0,229,160,0.2); }
+  .btn-blue   { background: rgba(0,137,255,0.12);  color: var(--accent2); border: 1px solid rgba(0,137,255,0.2); }
+  .btn-red    { background: rgba(220,60,60,0.12);  color: #ff6b6b;        border: 1px solid rgba(220,60,60,0.2); }
+  .btn-gray   { background: rgba(255,255,255,0.06); color: var(--muted);  border: 1px solid var(--border-hi); }
+  .btn-orange { background: rgba(255,107,53,0.12); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
+  .btn-yellow { background: rgba(255,200,0,0.1);   color: #ffc800;        border: 1px solid rgba(255,200,0,0.2); }
+
+  .ctrl-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .ctrl-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .stat-item { display: flex; flex-direction: column; gap: 2px; }
+  .stat-val  { font-family: 'DM Mono', monospace; font-size: 1.1rem; font-weight: 500; }
+  .stat-val.pos { color: var(--accent); }
+  .stat-val.neg { color: #ff5555; }
+  .stat-lbl  { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+  .stat-sep  { width: 1px; height: 32px; background: var(--border-hi); }
+
+  /* ── SYM PILLS ── */
+  .sym-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem; }
+
+  .sym-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border-hi);
+    color: var(--muted);
+    background: var(--bg3);
+  }
+
+  .sym-pill.active {
+    background: rgba(180,100,255,0.15);
+    border-color: rgba(180,100,255,0.35);
+    color: #c084fc;
+  }
+
+  /* ── NOCOMM CYCLE ── */
+  .nocomm-cycle {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    width: fit-content;
+    margin-bottom: 1.5rem;
+  }
+
+  .nc-step {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 8px 16px;
+    background: var(--bg3);
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+  }
+
+  .nc-step:last-child { border-right: none; }
+  .nc-step.hi { background: rgba(0,137,255,0.12); color: var(--accent2); }
+
+  /* ── ALTMAGIC BOX ── */
+  .altmagic-box {
+    background: rgba(180,100,255,0.06);
+    border: 1px solid rgba(180,100,255,0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ── EQUITY STOP ── */
+  .eq-box {
+    background: rgba(220,60,60,0.05);
+    border: 1px solid rgba(220,60,60,0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ── LIMIT FOLLOW ── */
+  .lf-box {
+    background: rgba(255,200,0,0.05);
+    border: 1px solid rgba(255,200,0,0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ── INSTALL ── */
+  .install-steps {
+    display: flex;
+    flex-direction: column;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .step {
+    background: var(--card-bg);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .step:last-child { border-bottom: none; }
+  .step:hover { background: var(--bg3); }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    background: rgba(0,229,160,0.08);
+    border: 1px solid rgba(0,229,160,0.2);
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-body h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .step-body p {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8em;
+    background: rgba(255,255,255,0.07);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: rgba(0,137,255,0.07);
+    border: 1px solid rgba(0,137,255,0.2);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-top: 2rem;
+  }
+
+  .info-box p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .info-box strong { color: var(--accent2); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-logo span { color: var(--accent); }
+  .footer-sub { font-size: 0.8rem; color: var(--dim); }
+
+  footer a {
+    color: var(--accent2);
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  footer a:hover { text-decoration: underline; }
+
+  /* ── CUSTOM CURSOR ── */
+  * { cursor: none !important; }
+  @media (hover: none) { * { cursor: auto !important; } }
+
+  #cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease, background 0.2s;
+    mix-blend-mode: screen;
+  }
+
+  #cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(0,229,160,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s, border-color 0.2s;
+  }
+
+  body:has(a:hover) #cursor-ring,
+  body:has(button:hover) #cursor-ring {
+    width: 56px; height: 56px;
+    border-color: rgba(0,229,160,0.7);
+  }
+
+  /* ── CANVAS PARTICLES ── */
+  #hero-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── AURORA ANIMATED ── */
+  .hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 20% 100%, rgba(0,137,255,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 80% 20%, rgba(0,229,160,0.06) 0%, transparent 55%);
+    pointer-events: none;
+    animation: aurora 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes aurora {
+    0%   { opacity: 0.6; transform: scale(1) rotate(0deg); }
+    50%  { opacity: 1;   transform: scale(1.05) rotate(1deg); }
+    100% { opacity: 0.6; transform: scale(0.97) rotate(-1deg); }
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.08s; }
+  .reveal-delay-2 { transition-delay: 0.16s; }
+  .reveal-delay-3 { transition-delay: 0.24s; }
+  .reveal-delay-4 { transition-delay: 0.32s; }
+  .reveal-delay-5 { transition-delay: 0.40s; }
+  .reveal-delay-6 { transition-delay: 0.48s; }
+
+  /* ── GLITCH ON TITLE ── */
+  .hero h1 {
+    position: relative;
+  }
+
+  .hero h1::before,
+  .hero h1::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    pointer-events: none;
+  }
+
+  .hero h1::before {
+    color: var(--accent2);
+    clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+    transform: translateX(-3px);
+    opacity: 0;
+    animation: glitch1 7s infinite;
+  }
+
+  .hero h1::after {
+    color: var(--accent);
+    clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+    transform: translateX(3px);
+    opacity: 0;
+    animation: glitch2 7s infinite;
+  }
+
+  @keyframes glitch1 {
+    0%, 94%, 100% { opacity: 0; transform: translateX(0); }
+    95%  { opacity: 0.5; transform: translateX(-4px); }
+    96%  { opacity: 0;   transform: translateX(0); }
+    97%  { opacity: 0.4; transform: translateX(-6px); }
+    98%  { opacity: 0;   transform: translateX(0); }
+  }
+  @keyframes glitch2 {
+    0%, 94%, 100% { opacity: 0; transform: translateX(0); }
+    95%  { opacity: 0.4; transform: translateX(4px); }
+    96%  { opacity: 0;   transform: translateX(0); }
+    97%  { opacity: 0.5; transform: translateX(6px); }
+    98%  { opacity: 0;   transform: translateX(0); }
+  }
+
+  /* ── CARD SHIMMER ON HOVER ── */
+  .profile-card,
+  .ctrl-card,
+  .feature-row {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-card::before,
+  .ctrl-card::before,
+  .feature-row::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -60%;
+    width: 40%;
+    height: 300%;
+    background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.04) 50%, transparent 70%);
+    transform: skewX(-15deg);
+    transition: none;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .profile-card:hover::before,
+  .ctrl-card:hover::before,
+  .feature-row:hover::before {
+    opacity: 1;
+    animation: shimmer 0.6s ease forwards;
+  }
+
+  @keyframes shimmer {
+    from { left: -60%; }
+    to   { left: 130%; }
+  }
+
+  /* ── GLOW BORDER ON CARD HOVER ── */
+  .profile-card:hover {
+    box-shadow: 0 0 0 1px rgba(0,229,160,0.15), 0 8px 32px rgba(0,229,160,0.05);
+  }
+
+  .ctrl-card:hover {
+    box-shadow: 0 0 0 1px rgba(0,137,255,0.15), 0 8px 24px rgba(0,137,255,0.05);
+  }
+
+  /* ── SECTION LABEL GLOW ── */
+  .section-label {
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-label::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0.4;
+  }
+
+  /* ── STAT BAR GLOW ON HOVER ── */
+  .stats-bar {
+    transition: box-shadow 0.3s;
+  }
+  .stats-bar:hover {
+    box-shadow: 0 0 40px rgba(0,229,160,0.06), 0 0 0 1px rgba(0,229,160,0.1);
+  }
+
+  /* ── STEP NUM PULSE ── */
+  .step-num {
+    animation: stepPulse 3s ease-in-out infinite;
+  }
+  .step:nth-child(2) .step-num { animation-delay: 1s; }
+  .step:nth-child(3) .step-num { animation-delay: 2s; }
+
+  @keyframes stepPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,160,0.3); }
+    50%       { box-shadow: 0 0 0 6px rgba(0,229,160,0); }
+  }
+
+  /* ── SYM PILL ACTIVE GLOW ── */
+  .sym-pill.active {
+    box-shadow: 0 0 16px rgba(180,100,255,0.25);
+    animation: symPulse 2s ease-in-out infinite;
+  }
+  @keyframes symPulse {
+    0%, 100% { box-shadow: 0 0 16px rgba(180,100,255,0.2); }
+    50%       { box-shadow: 0 0 28px rgba(180,100,255,0.4); }
+  }
+
+  /* ── NC STEP HI GLOW ── */
+  .nc-step.hi {
+    box-shadow: 0 0 20px rgba(0,137,255,0.2);
+    animation: ncPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes ncPulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(0,137,255,0.15); }
+    50%       { box-shadow: 0 0 28px rgba(0,137,255,0.35); }
+  }
+
+  /* ── SECTION DIVIDER GLOW ── */
+  section + section {
+    border-top: 1px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+  }
+  section + section::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(0,229,160,0.2) 30%, rgba(0,137,255,0.2) 60%, transparent 100%);
+  }
+
+  /* ── BADGE GLOW ── */
+  .badge {
+    box-shadow: 0 0 20px rgba(0,229,160,0.1);
+    animation: badgeFloat 4s ease-in-out infinite;
+  }
+  @keyframes badgeFloat {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-4px); }
+  }
+
+  /* ── ALTMAGIC BOX GLOW ── */
+  .altmagic-box {
+    transition: box-shadow 0.3s;
+  }
+  .altmagic-box:hover {
+    box-shadow: 0 0 32px rgba(180,100,255,0.1), 0 0 0 1px rgba(180,100,255,0.3);
+  }
+
+  /* ── LIMIT FOLLOW BOX GLOW ── */
+  .lf-box {
+    transition: box-shadow 0.3s;
+  }
+  .lf-box:hover {
+    box-shadow: 0 0 32px rgba(255,200,0,0.1), 0 0 0 1px rgba(255,200,0,0.3);
+  }
+
+  /* ── EQUITY BOX GLOW ── */
+  .eq-box {
+    transition: box-shadow 0.3s;
+  }
+  .eq-box:hover {
+    box-shadow: 0 0 32px rgba(220,60,60,0.08), 0 0 0 1px rgba(220,60,60,0.25);
+  }
+
+  /* ── FOOTER GLOW ── */
+  footer .footer-logo span {
+    text-shadow: 0 0 20px rgba(0,229,160,0.4);
+  }
+
+  /* ── GRID BG ANIMATED ── */
+  .grid-bg {
+    animation: gridShift 20s linear infinite;
+  }
+  @keyframes gridShift {
+    from { background-position: 0 0, 0 0; }
+    to   { background-position: 48px 48px, 48px 48px; }
+  }
+
+  /* ── NOCOMM CYCLE STEP HOVER ── */
+  .nc-step {
+    transition: background 0.2s, color 0.2s;
+  }
+  .nc-step:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+  }
+
+  /* ── CODE TAG GLOW ── */
+  code {
+    box-shadow: 0 0 8px rgba(0,229,160,0.1);
+    transition: box-shadow 0.2s;
+  }
+  code:hover {
+    box-shadow: 0 0 16px rgba(0,229,160,0.25);
+  }
+
+  /* ── HERO TITLE LETTER SPACING ANIMATE ── */
+  .hero h1 {
+    animation: heroReveal 1.2s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  @keyframes heroReveal {
+    from { opacity: 0; transform: translateY(40px) scale(0.96); letter-spacing: -0.06em; }
+    to   { opacity: 1; transform: translateY(0) scale(1); letter-spacing: -0.03em; }
+  }
+
+  .hero .badge { animation: fadeUp 0.8s 0.1s both, badgeFloat 4s 1s ease-in-out infinite; }
+  .hero-sub    { animation: fadeUp 0.8s 0.4s both; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── MAGNETIC BUTTON EFFECT (via JS class) ── */
+  .magnetic {
+    transition: transform 0.2s cubic-bezier(0.23,1,0.32,1);
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9990;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    animation: grainShift 0.4s steps(1) infinite;
+  }
+  @keyframes grainShift {
+    0%   { background-position: 0   0;   }
+    25%  { background-position: 60px 20px; }
+    50%  { background-position: 20px 60px; }
+    75%  { background-position: 80px 40px; }
+    100% { background-position: 0   0;   }
+  }
+
+  /* ── SCANLINES ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9989;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+  }
+
+  /* ── CURSOR TRAIL PARTICLES ── */
+  .trail-dot {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9997;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+  }
+
+  /* ── SPOTLIGHT OVERLAY per sezioni ── */
+  .spotlight-section {
+    position: relative;
+  }
+  .spotlight-section::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(
+      400px circle at var(--mx, -9999px) var(--my, -9999px),
+      rgba(0,229,160,0.04) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 1;
+    border-radius: inherit;
+  }
+
+  /* ── SECTION TITLE GRADIENT TEXT ── */
+  .section-title {
+    background: linear-gradient(135deg, var(--text) 40%, rgba(232,234,240,0.5) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── HERO H1 GRADIENT ── */
+  .hero h1 {
+    background: linear-gradient(160deg, #ffffff 30%, rgba(0,229,160,0.8) 70%, #0089ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 60px rgba(0,229,160,0.15));
+  }
+  .hero h1 span.gpt {
+    background: linear-gradient(135deg, var(--accent), #00ffcc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── LIVE CHART MINI ── */
+  #live-chart-wrap {
+    margin-top: 2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.5rem 0.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+  #live-chart-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #live-chart-label span {
+    color: var(--accent);
+    animation: blinkLive 1.2s steps(1) infinite;
+  }
+  @keyframes blinkLive {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+  #live-chart-canvas {
+    display: block;
+    width: 100%;
+    height: 60px;
+  }
+
+  /* ── PROFILE CARD DATA-GLOW ── */
+  .profile-card[data-accent]:hover {
+    transition: box-shadow 0.3s;
+  }
+  .profile-card[data-accent="green"]:hover  { box-shadow: 0 0 0 1px rgba(0,229,160,0.25), 0 12px 40px rgba(0,229,160,0.08); }
+  .profile-card[data-accent="blue"]:hover   { box-shadow: 0 0 0 1px rgba(0,137,255,0.25), 0 12px 40px rgba(0,137,255,0.08); }
+  .profile-card[data-accent="orange"]:hover { box-shadow: 0 0 0 1px rgba(255,107,53,0.25), 0 12px 40px rgba(255,107,53,0.08); }
+  .profile-card[data-accent="gray"]:hover   { box-shadow: 0 0 0 1px rgba(255,255,255,0.12), 0 12px 40px rgba(255,255,255,0.04); }
+  .profile-card[data-accent="purple"]:hover { box-shadow: 0 0 0 1px rgba(180,100,255,0.3),  0 12px 40px rgba(180,100,255,0.1); }
+
+  /* ── HERO SCROLL INDICATOR ── */
+  .scroll-indicator {
+    position: relative;
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    animation: fadeUp 0.8s 0.8s both;
+    z-index: 1;
+  }
+  .scroll-indicator span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+  .scroll-mouse {
+    width: 20px; height: 32px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-mouse::before {
+    content: '';
+    position: absolute;
+    top: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 3px; height: 6px;
+    background: var(--accent);
+    border-radius: 2px;
+    animation: scrollBounce 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollBounce {
+    0%, 100% { top: 6px; opacity: 1; }
+    80%       { top: 18px; opacity: 0; }
+  }
+
+  /* ── SECTION NUMBER WATERMARK ── */
+  section {
+    counter-increment: section-counter;
+  }
+  .section-watermark {
+    position: absolute;
+    right: -0.5rem;
+    top: -1rem;
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 800;
+    color: rgba(255,255,255,0.015);
+    letter-spacing: -0.05em;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+  }
+
+  /* ── FEATURE ROW ACCENT LINE ── */
+  .feature-row {
+    border-left: 2px solid transparent;
+    transition: border-color 0.3s, background 0.2s;
+  }
+  .feature-row:hover {
+    border-left-color: var(--accent);
+  }
+
+  /* ── CTRL BTN GLOW PRESS ── */
+  .ctrl-btn {
+    transition: transform 0.1s, box-shadow 0.2s;
+    cursor: default;
+  }
+  .ctrl-btn:active { transform: scale(0.93); }
+  .btn-green:hover  { box-shadow: 0 0 16px rgba(0,229,160,0.3); }
+  .btn-blue:hover   { box-shadow: 0 0 16px rgba(0,137,255,0.3); }
+  .btn-red:hover    { box-shadow: 0 0 16px rgba(220,60,60,0.3);  }
+  .btn-orange:hover { box-shadow: 0 0 16px rgba(255,107,53,0.3); }
+  .btn-yellow:hover { box-shadow: 0 0 16px rgba(255,200,0,0.3); }
+
+  /* ── FOOTER ANIMATED GRADIENT ── */
+  footer {
+    position: relative;
+    overflow: hidden;
+  }
+  footer::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(0,229,160,0.06) 0%, transparent 60%);
+    animation: footerGlow 4s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes footerGlow {
+    from { opacity: 0.5; }
+    to   { opacity: 1; }
+  }
+
+  /* ── PROFILE TAG SHIMMER ── */
+  .profile-tag {
+    position: relative;
+    overflow: hidden;
+  }
+  .profile-tag::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    animation: tagShimmer 3s ease-in-out infinite;
+  }
+  @keyframes tagShimmer {
+    0%, 70%, 100% { left: -100%; }
+    85%            { left: 100%; }
+  }
+
+  /* ── HERO GRADIENT TEXT ANIMATE ── */
+  .hero h1 {
+    background-size: 200% 200%;
+    animation: heroReveal 1.2s cubic-bezier(0.16,1,0.3,1) both, gradientShift 6s ease-in-out infinite 1.5s;
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50%       { background-position: 100% 50%; }
+  }
+
+  @media (max-width: 640px) {
+    /* Hero */
+    .hero { padding: 4rem 1.25rem 2.5rem; }
+    .hero h1 { font-size: 2.8rem; }
+    .hero-sub { font-size: 0.95rem; }
+
+    /* Layout */
+    .container { padding: 0 1.25rem; }
+    section { padding: 2.5rem 0; }
+
+    /* Section titles */
+    .section-title { font-size: 1.6rem; }
+    .section-lead { font-size: 0.95rem; margin-bottom: 2rem; }
+
+    /* Features */
+    .feature-row {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+      padding: 1.25rem;
+    }
+    .feature-name { font-size: 0.75rem; }
+    .feature-desc { font-size: 0.85rem; }
+
+    /* Profiles: 1 colonna */
+    .profiles-grid { grid-template-columns: 1fr; }
+    .profile-card { padding: 1.5rem; }
+
+    /* Controls: 1 colonna */
+    .controls-grid { grid-template-columns: 1fr; }
+    .ctrl-card, .ctrl-card.wide { grid-column: span 1; padding: 1.25rem; }
+
+    /* Stats bar: colonna */
+    .stats-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+    .stat-sep { display: none; }
+
+    /* Sym pills: wrap naturale, già ok ma riduciamo font */
+    .sym-pill { font-size: 11px; padding: 5px 10px; }
+
+    /* NoComm cycle: scroll orizzontale */
+    .nocomm-cycle {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nc-step { white-space: nowrap; }
+
+    /* AltMagic / Equity boxes */
+    .altmagic-box, .eq-box { padding: 1.25rem; }
+    .altmagic-box > div { flex-direction: column; gap: 1rem; }
+
+    /* Install steps */
+    .step { padding: 1.25rem; gap: 1rem; }
+    .step-num { width: 28px; height: 28px; font-size: 0.7rem; }
+    .step-body h4 { font-size: 0.95rem; }
+    .step-body p { font-size: 0.82rem; }
+
+    /* Footer */
+    footer { padding: 2rem 1.25rem; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ════ HERO ════ -->
+<div class="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="grid-bg"></div>
+
+  <div class="badge">
+    <span class="dot"></span>
+    GPT Trading by theponz.eth
+  </div>
+
+  <h1 data-text="GPT Trade Manager">
+    <span class="gpt">GPT</span><br>Trade Manager
+  </h1>
+
+  <p class="hero-sub">
+    Dashboard semi-automatica per MetaTrader 4. Apri, gestisci e chiudi trade su più simboli e strategie con un'interfaccia sempre visibile sul grafico.
+  </p>
+
+  <div class="scroll-indicator">
+    <div class="scroll-mouse"></div>
+    <span>scroll</span>
+  </div>
+</div>
+
+<!-- ════ COSA È ════ -->
+<section>
+  <div class="container">
+    <p class="section-label">Overview</p>
+    <h2 class="section-title">Un pannello di controllo,<br>non un EA cieco</h2>
+    <p class="section-lead">
+      GPT Trade Manager non apre trade da solo: sei sempre tu a decidere quando e cosa fare. Lo strumento si occupa dell'esecuzione rapida, della gestione automatica di breakeven e trailing stop, e del monitoraggio di tutto il portafoglio in tempo reale — su qualunque simbolo, anche diverso da quello del grafico.
+    </p>
+
+    <div class="features-list">
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          Dashboard on-chart
+        </div>
+        <div class="feature-desc">
+          Il pannello è un Expert Advisor sovrapposto al grafico. <strong>Non occupa una sottofinestra</strong> e rimane visibile mentre operi. Tutti i controlli — apertura ordini, chiusura, breakeven, trailing — sono a portata di click senza aprire finestre esterne.
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          Aggiornamento live
+        </div>
+        <div class="feature-desc">
+          P&L aperto, P&L chiuso, percentuale sul balance, lotti attivi BUY/SELL: tutti i dati si aggiornano ogni pochi secondi. <strong>Nessun refresh manuale</strong> necessario.
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h7"/><circle cx="17" cy="18" r="3"/></svg>
+          Multi-simbolo
+        </div>
+        <div class="feature-desc">
+          I 5 slot <strong>SYM1–SYM5</strong> permettono di operare su simboli diversi dal grafico senza mai cambiare chart. Il pannello apre gli ordini sul simbolo selezionato e, in modalità <em>Pair THIS</em>, applica tutte le azioni solo a quel simbolo.
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l9 5v8l-9 5-9-5V8z"/><path d="M12 3v13M3 8l9 5 9-5"/></svg>
+          6 profili operativi
+        </div>
+        <div class="feature-desc">
+          Ogni profilo ha <strong>MagicNumber, lotti e parametri di gestione indipendenti</strong>. Si passa da uno all'altro con il ciclo NoComm senza toccare gli input. Nessuna interferenza tra strategie diverse.
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-2-8 2v7c0 6 8 10 8 10z"/></svg>
+          Equity Stop integrato
+        </div>
+        <div class="feature-desc">
+          Definisci una soglia di perdita massima in percentuale o in valore assoluto. <strong>Quando l'equity scende sotto quella soglia, l'EA chiude tutto</strong> automaticamente e si disattiva, proteggendo il conto da drawdown incontrollati.
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h2a2 2 0 010 4h-2M6 8H4a2 2 0 000 4h2M6 8h12v4M6 12v4a2 2 0 002 2h8a2 2 0 002-2v-4"/></svg>
+          Notifiche Push
+        </div>
+        <div class="feature-desc">
+          Invio di <strong>notifiche push al cellulare</strong> tramite MetaTrader mobile per aperture, chiusure e eventi critici. Separabili tra notifiche generali e notifiche di singolo trade.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ PROFILI ════ -->
+<section>
+  <div class="container">
+    <p class="section-label">Profili operativi</p>
+    <h2 class="section-title">Sei strategie, un solo pannello</h2>
+    <p class="section-lead">
+      Ogni profilo ha MagicNumber, commento ordine e lottaggio configurabili negli input. Il profilo attivo viene selezionato ruotando il bottone <strong style="color:var(--text)">NoComm</strong> — nessun riavvio necessario.
+    </p>
+
+    <div class="profiles-grid">
+      <div class="profile-card" data-accent="green">
+        <div class="profile-tag tag-hft">HFT</div>
+        <div class="profile-name">High Frequency</div>
+        <div class="profile-desc">Profilo pensato per operatività ad alta frequenza. Trailing stop con step minimi, breakeven aggressivo. Ideale su timeframe bassi dove serve massima reattività nella gestione.</div>
+        <div class="profile-detail">5 lotti configurabili<br><span>Breakeven automatico · TS ultra-fine</span></div>
+      </div>
+      <div class="profile-card" data-accent="blue">
+        <div class="profile-tag tag-trl">TRL</div>
+        <div class="profile-name">Trailing</div>
+        <div class="profile-desc">Profilo ottimizzato per swing o trend-following. Breakeven con trigger distanziato, trailing step più ampio per lasciare respirare la posizione prima di stringere lo stop.</div>
+        <div class="profile-detail">5 lotti configurabili<br><span>BE ritardato · TS con step largo</span></div>
+      </div>
+      <div class="profile-card" data-accent="orange">
+        <div class="profile-tag tag-ssl">SSL</div>
+        <div class="profile-name">Stop Loss fisso</div>
+        <div class="profile-desc">Ogni ordine viene aperto con uno stop loss iniziale in pips definito negli input. Utile per strategie che richiedono un rischio per trade fisso e prevedibile sin dall'apertura.</div>
+        <div class="profile-detail">5 lotti configurabili<br><span>SL automatico all'apertura · BE &amp; TS opzionali</span></div>
+      </div>
+      <div class="profile-card" data-accent="gray">
+        <div class="profile-tag tag-manual">§ Manual</div>
+        <div class="profile-name">Manuale puro</div>
+        <div class="profile-desc">Apertura senza TP né SL preimpostato. Massima libertà operativa: gestisci tu ogni posizione. Il breakeven manuale tramite bottone dedicato rimane disponibile.</div>
+        <div class="profile-detail">5 lotti configurabili<br><span>Nessun TP/SL automatico</span></div>
+      </div>
+      <div class="profile-card" data-accent="gray">
+        <div class="profile-tag tag-manualtp">§TP Manual</div>
+        <div class="profile-name">Manuale con TP/SL</div>
+        <div class="profile-desc">Come il profilo manuale, ma con Take Profit e Stop Loss in pips applicati automaticamente all'apertura. Perfetto per chi vuole definire un rischio/rendimento preciso con un click.</div>
+        <div class="profile-detail">5 lotti configurabili<br><span>TP e SL in pips configurabili · 0 = disabilitato</span></div>
+      </div>
+      <div class="profile-card" data-accent="gray">
+        <div class="profile-tag tag-manualsl">§SL Manual</div>
+        <div class="profile-name">Manuale con Stop Loss</div>
+        <div class="profile-desc">Come il profilo manuale puro, ma con uno Stop Loss in pips applicato automaticamente all'apertura. Utile per chi vuole definire un rischio massimo per trade senza fissare un Take Profit.</div>
+        <div class="profile-detail">5 lotti configurabili<br><span>SL automatico in pips · 0 = disabilitato</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CONTROLLI ════ -->
+<section>
+  <div class="container">
+    <p class="section-label">Interfaccia</p>
+    <h2 class="section-title">Ogni bottone ha uno scopo preciso</h2>
+    <p class="section-lead">
+      Il pannello è organizzato in righe funzionali. Dalla riga dei simboli custom alla barra statistiche in basso, tutto è progettato per ridurre i click necessari durante la sessione di trading.
+    </p>
+
+    <div class="controls-grid">
+      <div class="ctrl-card">
+        <div class="ctrl-btn" style="background:rgba(180,100,255,0.12);color:#c084fc;border:1px solid rgba(180,100,255,0.25);">SYM1 – SYM5</div>
+        <div class="ctrl-title">Simboli custom</div>
+        <div class="ctrl-desc">Seleziona il simbolo su cui operare. Il campo editabile sotto il bottone mostra il simbolo attivo. Il grafico può restare su un simbolo diverso.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn btn-green">BREAKEVEN</div>
+        <div class="ctrl-title">Breakeven globale</div>
+        <div class="ctrl-desc">Imposta lo stop loss al prezzo di apertura (più un offset configurabile) su tutti i trade gestiti dal pannello, in un solo click.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn btn-gray">BREAKEVEN §</div>
+        <div class="ctrl-title">Breakeven manuale</div>
+        <div class="ctrl-desc">Come il bottone globale ma agisce solo sui trade aperti col profilo § Manual, senza toccare gli altri.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn btn-yellow">TS ON / OFF</div>
+        <div class="ctrl-title">Trailing Stop</div>
+        <div class="ctrl-desc">Attiva o disattiva il trailing stop automatico. Quando attivo, lo SL segue il prezzo secondo i parametri di ogni profilo.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn btn-blue">Pair THIS / ALL</div>
+        <div class="ctrl-title">Modalità coppia</div>
+        <div class="ctrl-desc"><em>Pair THIS</em>: azioni solo sul simbolo selezionato. <em>Pair ALL</em>: agiscono su tutti i simboli gestiti contemporaneamente.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn btn-blue">NoComm</div>
+        <div class="ctrl-title">Selezione profilo</div>
+        <div class="ctrl-desc">Ruota ciclicamente tra i profili: § → TRL → HFT → SSL → §TP → §SL. Il profilo attivo determina MagicNumber e lotti usati per i nuovi ordini.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn btn-gray">CLOSE ALL</div>
+        <div class="ctrl-title">Chiudi tutto</div>
+        <div class="ctrl-desc">Chiude tutti i trade gestiti dall'EA. Con <em>Pair THIS</em> attivo si limita al simbolo corrente.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn btn-green">CLOSE ALL BUY</div>
+        <div class="ctrl-title">Chiudi solo BUY</div>
+        <div class="ctrl-desc">Chiude tutti i trade in direzione BUY, lasciando aperti i SELL. Rispetta il filtro Pair THIS/ALL.</div>
+      </div>
+      <div class="ctrl-card wide">
+        <div class="ctrl-btn btn-red">CLOSE ALL SELL</div>
+        <div class="ctrl-title">Chiudi solo SELL</div>
+        <div class="ctrl-desc">Chiude tutti i trade in direzione SELL, lasciando aperti i BUY. Rispetta il filtro Pair THIS/ALL.</div>
+      </div>
+      <div class="ctrl-card wide">
+        <div class="ctrl-btn btn-orange">RESET STAT</div>
+        <div class="ctrl-title">Reset statistiche</div>
+        <div class="ctrl-desc">Azzera i contatori P&L chiusi e reimposta il balance di riferimento per il calcolo delle percentuali. Utile a inizio sessione.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn btn-yellow">LIMIT FOLLOW</div>
+        <div class="ctrl-title">Limit Follow ON/OFF</div>
+        <div class="ctrl-desc">Attiva l'inseguimento automatico del pending Sell/Buy Limit sul simbolo operativo, riaprendo un trade HFT nella direzione indicata ogni volta che si chiude.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn btn-yellow">ONLY LED</div>
+        <div class="ctrl-title">Filtro LED per Limit Follow</div>
+        <div class="ctrl-desc">Se attivo, Limit Follow apre un nuovo trade solo quando il LED di confluenza MTF conferma la direzione del pending seguito.</div>
+      </div>
+      <div class="ctrl-card wide">
+        <div class="ctrl-btn btn-gray">STAT: SOLO EA / TUTTI</div>
+        <div class="ctrl-title">Scope statistiche</div>
+        <div class="ctrl-desc"><em>Solo EA</em>: la barra statistiche conta solo i trade del pannello. <em>Tutti</em>: conta ogni ordine presente sul conto, di qualsiasi bot o apertura manuale.</div>
+      </div>
+    </div>
+
+    <p class="section-label" style="margin-bottom:1rem;">Barra statistiche</p>
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-val pos">+0.32%</div><div class="stat-lbl">P&L chiusi %</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><div class="stat-val pos">+32.63</div><div class="stat-lbl">P&L chiusi $</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><div class="stat-val neg">–3.27%</div><div class="stat-lbl">P&L aperto %</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><div class="stat-val neg">–331.51</div><div class="stat-lbl">P&L aperto $</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><div class="stat-val" style="color:var(--accent2)">0.01 / 0.02</div><div class="stat-lbl">Lotti BUY / SELL</div></div>
+    </div>
+    <p style="font-size:0.85rem; color:var(--muted); line-height:1.7;">La barra mostra in tempo reale il risultato cumulato dei trade chiusi dall'ultimo reset, il floating dei trade aperti (in valore assoluto e in percentuale sul balance), e il totale dei lotti attivi per direzione. Il bottone <strong style="color:var(--text)">STAT: SOLO EA / TUTTI</strong> determina se questi numeri considerano solo i trade del pannello o l'intero conto.</p>
+
+  </div>
+</section>
+
+<!-- ════ AUTOMAZIONE ════ -->
+<section>
+  <div class="container">
+    <p class="section-label">Automazione</p>
+    <h2 class="section-title">Breakeven &amp; Trailing Stop</h2>
+    <p class="section-lead">Ogni profilo ha parametri indipendenti per l'automazione dello stop loss. Possono girare in parallelo senza interferirsi.</p>
+
+    <div class="features-list" style="margin-bottom:3rem;">
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          BE Trigger
+        </div>
+        <div class="feature-desc">Dopo quanti pips di profitto lo stop loss viene spostato automaticamente al breakeven. Configurabile per profilo — da 1 pip (HFT aggressivo) a valori molto alti per disabilitarlo di fatto.</div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          BE Offset
+        </div>
+        <div class="feature-desc">Distanza in pips dal prezzo di apertura a cui viene fissato il breakeven. Un offset positivo garantisce di coprire almeno le commissioni prima che lo stop venga colpito.</div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg>
+          Trailing Start
+        </div>
+        <div class="feature-desc">Soglia di profitto in pips oltre la quale il trailing stop si attiva. Prima di quella soglia lo stop rimane fermo, proteggendo da oscillazioni iniziali che chiuderebbero il trade troppo presto.</div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14"/><circle cx="12" cy="12" r="9"/></svg>
+          Trailing Step
+        </div>
+        <div class="feature-desc">Distanza in pips tra prezzo corrente e stop loss durante il trailing. Step piccolo = insegue da vicino (ideale HFT); step largo = lascia spazio al mercato (ideale trend).</div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+          Spread Protection
+        </div>
+        <div class="feature-desc">Aggiunge lo spread corrente alla distanza del trailing stop. Evita che spread allargati durante eventi di volatilità colpiscano lo stop per errore.</div>
+      </div>
+    </div>
+
+    <div class="altmagic-box">
+      <p class="section-label" style="color:#c084fc;margin-bottom:0.75rem;">AltMagic — Logica SL avanzata</p>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">
+        Il profilo AltMagic include una <strong style="color:var(--text)">logica SL speciale</strong> indipendente dal trailing classico. Quando un trade esterno ha raggiunto una soglia di profitto in pips <em>e</em> ha superato un ritardo temporale configurabile, il sistema applica automaticamente uno stop loss a distanza prestabilita.
+      </p>
+      <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#c084fc;margin-bottom:4px;">Delay</div><div style="font-size:0.8rem;color:var(--muted);">Secondi minimi di vita del trade prima che la logica si attivi</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#c084fc;margin-bottom:4px;">Profit Threshold</div><div style="font-size:0.8rem;color:var(--muted);">Pips di profitto minimi richiesti per l'attivazione</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#c084fc;margin-bottom:4px;">SL Distance</div><div style="font-size:0.8rem;color:var(--muted);">Distanza in pips dello stop applicato dalla logica speciale</div></div>
+      </div>
+    </div>
+
+    <div class="lf-box">
+      <p class="section-label" style="color:#ffc800;margin-bottom:0.75rem;">Limit Follow — HFT automatico su pending</p>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">
+        Individua automaticamente sul simbolo operativo il pending <strong style="color:var(--text)">Sell Limit</strong> o <strong style="color:var(--text)">Buy Limit</strong> più vicino al prezzo corrente e apre ripetutamente un trade HFT nella direzione che punta il pending — Sell Limit sopra il prezzo → HFT BUY, Buy Limit sotto il prezzo → HFT SELL. Ogni volta che il trade si chiude, se il pending resta valido, ne apre uno nuovo, in un ciclo continuo gestito dal normale motore BE/TS con parametri dedicati.
+      </p>
+      <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">Only LED</div><div style="font-size:0.8rem;color:var(--muted);">Filtro opzionale: apre un nuovo trade solo se il LED di confluenza MTF è a favore della direzione</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">Close on Activate</div><div style="font-size:0.8rem;color:var(--muted);">Chiude il trade HFT aperto quando il pending seguito si attiva e diventa un trade di mercato</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">Close on Cancel</div><div style="font-size:0.8rem;color:var(--muted);">Chiude il trade HFT aperto quando il pending seguito viene cancellato dal mercato</div></div>
+      </div>
+    </div>
+
+    <div class="eq-box">
+      <p class="section-label" style="color:#ff6b6b;margin-bottom:0.75rem;">Equity Stop — Protezione conto</p>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;">
+        Quando abilitato, il sistema monitora continuamente l'equity. Se scende sotto la soglia — in <strong style="color:var(--text)">percentuale</strong> o come <strong style="color:var(--text)">importo assoluto</strong> — tutti i trade vengono chiusi immediatamente e l'EA si disattiva. È l'ultima linea di difesa contro perdite non presidiate.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ════ MULTI-SIMBOLO ════ -->
+<section>
+  <div class="container">
+    <p class="section-label">Multi-simbolo</p>
+    <h2 class="section-title">Operi su 5 simboli senza cambiare grafico</h2>
+    <p class="section-lead">I 5 slot SYM permettono di definire simboli personalizzati. Ogni slot ha un bottone di selezione e un campo di testo editabile. Il simbolo attivo è quello evidenziato — tutti i nuovi ordini vengono aperti su di esso.</p>
+
+    <div class="sym-row">
+      <div class="sym-pill active">AUDNZD.</div>
+      <div class="sym-pill">EURUSD.</div>
+      <div class="sym-pill">GBPUSD.</div>
+      <div class="sym-pill">XTIUSD.</div>
+      <div class="sym-pill">BTCUSD.</div>
+    </div>
+
+    <div class="features-list">
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+          Pair THIS
+        </div>
+        <div class="feature-desc">Modalità predefinita. Breakeven, trailing, chiusura e apertura ordini agiscono <strong>solo sul simbolo selezionato</strong>. Isola perfettamente ogni strumento.</div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          Pair ALL
+        </div>
+        <div class="feature-desc">Le azioni si propagano su <strong>tutti i simboli gestiti contemporaneamente</strong>. Un singolo CLOSE ALL con Pair ALL chiude l'intero portafoglio in un click.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ NOCOMM ════ -->
+<section>
+  <div class="container">
+    <p class="section-label">Selezione profilo</p>
+    <h2 class="section-title">Il ciclo NoComm</h2>
+    <p class="section-lead">Il bottone NoComm seleziona quale profilo è attivo per i nuovi ordini. Ruota in sequenza tra tutti i profili disponibili — nessun riavvio necessario.</p>
+
+    <div class="nocomm-cycle">
+      <div class="nc-step">NoComm §</div>
+      <div class="nc-step hi">NoComm TRL</div>
+      <div class="nc-step">NoComm HFT</div>
+      <div class="nc-step">NoComm SSL</div>
+      <div class="nc-step">NoComm §TP</div>
+      <div class="nc-step">NoComm §SL</div>
+    </div>
+
+    <p style="font-size:0.875rem;color:var(--muted);line-height:1.7;max-width:600px;">Il profilo evidenziato è quello attivo. I lotti usati per i nuovi ordini provengono dal relativo gruppo di input. I contatori lotti in basso al pannello mostrano l'esposizione attuale per direzione, aggiornata in tempo reale.</p>
+  </div>
+</section>
+
+<!-- ════ INSTALLAZIONE ════ -->
+<section>
+  <div class="container">
+    <p class="section-label">Installazione</p>
+    <h2 class="section-title">Pronti in tre minuti</h2>
+    <p class="section-lead">GPT Trade Manager si installa come qualsiasi Expert Advisor su MetaTrader 4.</p>
+
+    <div class="install-steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Applica al grafico</h4>
+          <p>Trascina l'EA su un grafico qualsiasi. Assicurati di abilitare il <strong>trading automatico</strong> nel terminale e di spuntare <em>"Consenti trading live"</em> nelle proprietà dell'EA.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Ricevi il setfile personalizzato</h4>
+          <p>Non configurare gli input a caso — contattami e ti indico il setfile più adatto alla tua operatività. <a href="https://linktr.ee/theponz.eth" target="_blank" style="color:var(--accent);text-decoration:none;font-family:'DM Mono',monospace;font-size:0.85em;">linktr.ee/theponz.eth</a></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Inserisci i simboli custom</h4>
+          <p>Clicca sui campi editabili sotto SYM1–SYM5 e digita il nome esatto del simbolo come appare nel Market Watch del tuo broker — es. <code>EURUSD.</code> o <code>BTCUSD</code>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <p><strong>Nota:</strong> il tool usa GlobalVariables di MT4 per mantenere lo stato (TS attivo, simbolo selezionato, profilo corrente) anche dopo un ricaricamento del grafico. Le GlobalVariables vengono ripulite automaticamente alla disinstallazione.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo"><span>GPT</span> Trade Manager</div>
+  <p class="footer-sub" style="margin-bottom:0.75rem;">v1.35 — Copyright 2026 GPT Trading by theponz.eth</p>
+  <a href="https://gpttrading.info">gpttrading.info</a>
+</footer>
+<script>
+/* ── CUSTOM CURSOR ── */
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mx = -100, my = -100, rx = -100, ry = -100;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+(function animateCursor() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+  cursorRing.style.left = rx + 'px';
+  cursorRing.style.top  = ry + 'px';
+  requestAnimationFrame(animateCursor);
+})();
+
+document.querySelectorAll('a, button, .profile-card, .ctrl-card, .nc-step, .sym-pill').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1.8)';
+    cursor.style.background = 'var(--accent2)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+    cursor.style.background = 'var(--accent)';
+  });
+});
+
+/* ── CANVAS PARTICLES ── */
+const canvas = document.getElementById('hero-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resize() {
+  const hero = canvas.parentElement;
+  W = canvas.width  = hero.offsetWidth;
+  H = canvas.height = hero.offsetHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const COLORS = ['rgba(0,229,160,', 'rgba(0,137,255,', 'rgba(180,100,255,'];
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x  = Math.random() * W;
+    this.y  = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.vy = (Math.random() - 0.5) * 0.4 - 0.15;
+    this.r  = Math.random() * 1.8 + 0.4;
+    this.a  = Math.random() * 0.5 + 0.1;
+    this.c  = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.life = 0;
+    this.maxLife = 180 + Math.random() * 180;
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy; this.life++;
+    if (this.life > this.maxLife || this.x < 0 || this.x > W || this.y < 0) this.reset();
+  }
+  draw() {
+    const progress = this.life / this.maxLife;
+    const alpha = this.a * Math.sin(Math.PI * progress);
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = this.c + alpha + ')';
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 90; i++) particles.push(new Particle());
+
+/* draw connecting lines */
+function drawLines() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = 'rgba(0,229,160,' + (0.04 * (1 - dist/100)) + ')';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, W, H);
+  drawLines();
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+/* ── SCROLL REVEAL ── */
+const revealTargets = [];
+document.querySelectorAll('section').forEach((sec, si) => {
+  const label   = sec.querySelector('.section-label');
+  const title   = sec.querySelector('.section-title');
+  const lead    = sec.querySelector('.section-lead');
+  const cards   = sec.querySelectorAll('.profile-card, .ctrl-card, .feature-row, .step, .stat-item');
+  const other   = sec.querySelectorAll('.nocomm-cycle, .sym-row, .stats-bar, .altmagic-box, .eq-box, .lf-box, .info-box');
+
+  [label, title, lead].forEach((el, i) => {
+    if (el) { el.classList.add('reveal', 'reveal-delay-' + (i+1)); revealTargets.push(el); }
+  });
+  cards.forEach((el, i) => {
+    el.classList.add('reveal', 'reveal-delay-' + ((i % 6) + 1)); revealTargets.push(el);
+  });
+  other.forEach((el, i) => {
+    el.classList.add('reveal', 'reveal-delay-' + (i + 1)); revealTargets.push(el);
+  });
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.08 });
+
+revealTargets.forEach(el => observer.observe(el));
+
+/* ── ANIMATED COUNTERS in stats bar ── */
+const statVals = document.querySelectorAll('.stat-val');
+const animatedCounters = new Set();
+
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !animatedCounters.has(e.target)) {
+      animatedCounters.add(e.target);
+      const target = e.target;
+      const text = target.textContent.trim();
+      const num = parseFloat(text.replace(/[^0-9.\-]/g, ''));
+      if (!isNaN(num) && Math.abs(num) > 0) {
+        let start = 0;
+        const prefix = text.match(/^[^\d\-]*/)[0];
+        const suffix = text.replace(/^[+\-]?[\d.]+/, '');
+        const sign = text.includes('–') || text.includes('-') ? '–' : (num > 0 ? '+' : '');
+        const duration = 1200;
+        const startTime = performance.now();
+        function update(now) {
+          const progress = Math.min((now - startTime) / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          const val = (num * ease).toFixed(2);
+          target.textContent = sign + Math.abs(val) + suffix;
+          if (progress < 1) requestAnimationFrame(update);
+          else target.textContent = text;
+        }
+        requestAnimationFrame(update);
+      }
+    }
+  });
+}, { threshold: 0.5 });
+
+statVals.forEach(el => counterObserver.observe(el));
+
+/* ── MOUSE PARALLAX on hero ── */
+const hero = document.querySelector('.hero');
+document.addEventListener('mousemove', e => {
+  const px = (e.clientX / window.innerWidth  - 0.5) * 20;
+  const py = (e.clientY / window.innerHeight - 0.5) * 20;
+  hero.style.setProperty('--px', px + 'px');
+  hero.style.setProperty('--py', py + 'px');
+});
+
+/* ── MAGNETIC HOVER on nocomm steps ── */
+document.querySelectorAll('.nc-step, .sym-pill, .ctrl-btn').forEach(el => {
+  el.classList.add('magnetic');
+  el.addEventListener('mousemove', e => {
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    const dx = (e.clientX - cx) * 0.25;
+    const dy = (e.clientY - cy) * 0.25;
+    el.style.transform = `translate(${dx}px, ${dy}px)`;
+  });
+  el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+});
+/* ── CURSOR FIRE TRAIL ── */
+(function() {
+  const trails = [];
+  const MAX = 18;
+  const colors = ['#00e5a0','#00ffcc','#0089ff','#00b4ff','#c084fc','#ffffff'];
+  for (let i = 0; i < MAX; i++) {
+    const d = document.createElement('div');
+    d.className = 'trail-dot';
+    d.style.cssText = 'width:6px;height:6px;opacity:0;';
+    document.body.appendChild(d);
+    trails.push({ el: d, x: -100, y: -100, age: i * 3 });
+  }
+
+  let tx = -100, ty = -100;
+  document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+
+  let frameCount = 0;
+  (function animateTrail() {
+    frameCount++;
+    trails.forEach((t, i) => {
+      t.age++;
+      const delay = i * 2;
+      const progress = Math.max(0, (frameCount - delay) / 30);
+      t.x += (tx - t.x) * (0.08 + i * 0.003);
+      t.y += (ty - t.y) * (0.08 + i * 0.003);
+      const scale = Math.max(0, 1 - i / MAX);
+      const opacity = Math.max(0, (1 - i / MAX) * 0.7);
+      const color = colors[i % colors.length];
+      const size = 4 + (MAX - i) * 0.4;
+      t.el.style.left = t.x + 'px';
+      t.el.style.top  = t.y + 'px';
+      t.el.style.width = size + 'px';
+      t.el.style.height = size + 'px';
+      t.el.style.opacity = opacity;
+      t.el.style.background = color;
+      t.el.style.boxShadow = `0 0 ${size*2}px ${color}`;
+      t.el.style.filter = `blur(${i * 0.3}px)`;
+    });
+    requestAnimationFrame(animateTrail);
+  })();
+})();
+
+/* ── TEXT SCRAMBLE on section labels ── */
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$#@&*!';
+
+function scrambleText(el) {
+  const original = el.textContent;
+  const len = original.length;
+  let iterations = 0;
+  const interval = setInterval(() => {
+    el.textContent = original.split('').map((char, i) => {
+      if (i < iterations) return original[i];
+      if (char === ' ') return ' ';
+      return CHARS[Math.floor(Math.random() * CHARS.length)];
+    }).join('');
+    iterations += 0.5;
+    if (iterations >= len + 2) { el.textContent = original; clearInterval(interval); }
+  }, 30);
+}
+
+const scrambleObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      scrambleText(e.target);
+      scrambleObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.section-label').forEach(el => scrambleObserver.observe(el));
+
+/* ── SPOTLIGHT on sections ── */
+document.querySelectorAll('section').forEach(sec => {
+  sec.classList.add('spotlight-section');
+  sec.addEventListener('mousemove', e => {
+    const rect = sec.getBoundingClientRect();
+    sec.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+    sec.style.setProperty('--my', (e.clientY - rect.top)  + 'px');
+  });
+  sec.addEventListener('mouseleave', () => {
+    sec.style.setProperty('--mx', '-9999px');
+    sec.style.setProperty('--my', '-9999px');
+  });
+});
+
+/* ── SECTION NUMBER WATERMARKS ── */
+document.querySelectorAll('section .container').forEach((cont, i) => {
+  const wm = document.createElement('div');
+  wm.className = 'section-watermark';
+  wm.textContent = String(i + 1).padStart(2, '0');
+  cont.style.position = 'relative';
+  cont.appendChild(wm);
+});
+
+/* ── LIVE EQUITY CHART ── */
+(function() {
+  const chartCanvas = document.getElementById('live-chart-canvas');
+  if (!chartCanvas) return;
+  const cctx = chartCanvas.getContext('2d');
+
+  function resizeChart() {
+    chartCanvas.width  = chartCanvas.offsetWidth * window.devicePixelRatio;
+    chartCanvas.height = 60 * window.devicePixelRatio;
+    chartCanvas.style.height = '60px';
+    cctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  }
+
+  const W2 = () => chartCanvas.offsetWidth;
+  const H2 = 60;
+  resizeChart();
+  window.addEventListener('resize', resizeChart);
+
+  // Generate a realistic-looking equity curve
+  const points = [];
+  let val = 0;
+  for (let i = 0; i < 80; i++) {
+    val += (Math.random() - 0.42) * 8;
+    val = Math.max(-40, Math.min(60, val));
+    points.push(val);
+  }
+
+  let offset = 0;
+  function drawChart() {
+    cctx.clearRect(0, 0, W2(), H2);
+    const w = W2(), h = H2;
+    const visiblePoints = 40;
+    const start = Math.floor(offset) % points.length;
+    const pts = [];
+    for (let i = 0; i < visiblePoints + 1; i++) {
+      pts.push(points[(start + i) % points.length]);
+    }
+
+    const min = Math.min(...pts) - 5;
+    const max = Math.max(...pts) + 5;
+    const range = max - min || 1;
+
+    const toX = i => (i / visiblePoints) * w;
+    const toY = v => h - ((v - min) / range) * (h - 10) - 5;
+
+    // Gradient fill
+    const lastPt = pts[pts.length - 1];
+    const isPos = lastPt >= 0;
+    const grad = cctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, isPos ? 'rgba(0,229,160,0.18)' : 'rgba(255,85,85,0.18)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+    cctx.beginPath();
+    cctx.moveTo(toX(0), toY(pts[0]));
+    for (let i = 1; i < pts.length; i++) {
+      const x0 = toX(i - 1), y0 = toY(pts[i-1]);
+      const x1 = toX(i),     y1 = toY(pts[i]);
+      const cx = (x0 + x1) / 2;
+      cctx.bezierCurveTo(cx, y0, cx, y1, x1, y1);
+    }
+    cctx.lineTo(toX(visiblePoints), h);
+    cctx.lineTo(0, h);
+    cctx.closePath();
+    cctx.fillStyle = grad;
+    cctx.fill();
+
+    // Line
+    cctx.beginPath();
+    cctx.moveTo(toX(0), toY(pts[0]));
+    for (let i = 1; i < pts.length; i++) {
+      const x0 = toX(i - 1), y0 = toY(pts[i-1]);
+      const x1 = toX(i),     y1 = toY(pts[i]);
+      const cx = (x0 + x1) / 2;
+      cctx.bezierCurveTo(cx, y0, cx, y1, x1, y1);
+    }
+    const lineColor = isPos ? '#00e5a0' : '#ff5555';
+    cctx.strokeStyle = lineColor;
+    cctx.lineWidth = 1.5;
+    cctx.shadowColor = lineColor;
+    cctx.shadowBlur = 6;
+    cctx.stroke();
+    cctx.shadowBlur = 0;
+
+    // Pulsing dot at end
+    const ex = toX(visiblePoints), ey = toY(pts[pts.length - 1]);
+    const pulse = (Math.sin(Date.now() * 0.006) + 1) * 0.5;
+    cctx.beginPath();
+    cctx.arc(ex, ey, 3 + pulse * 2, 0, Math.PI * 2);
+    cctx.fillStyle = `rgba(${isPos ? '0,229,160' : '255,85,85'},${0.2 + pulse * 0.2})`;
+    cctx.fill();
+    cctx.beginPath();
+    cctx.arc(ex, ey, 2.5, 0, Math.PI * 2);
+    cctx.fillStyle = lineColor;
+    cctx.fill();
+
+    // Inject new data point slowly
+    if (Math.random() < 0.02) {
+      const last = points[points.length - 1];
+      const next = Math.max(-40, Math.min(60, last + (Math.random() - 0.42) * 10));
+      points.push(next);
+      if (points.length > 200) points.shift();
+    }
+
+    offset += 0.12;
+    requestAnimationFrame(drawChart);
+  }
+  drawChart();
+})();
+
+/* ── 3D TILT on profile cards ── */
+document.querySelectorAll('.profile-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width  / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    card.style.transform = `perspective(600px) rotateY(${dx * 6}deg) rotateX(${-dy * 6}deg) scale(1.02)`;
+    card.style.transition = 'transform 0.1s';
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.transition = 'transform 0.4s cubic-bezier(0.23,1,0.32,1)';
+  });
+});
+
+/* ── NEON FLICKER on section labels in view ── */
+const flickerObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.animation = 'neonFlicker 0.4s ease both';
+      setTimeout(() => { e.target.style.animation = ''; }, 500);
+    }
+  });
+}, { threshold: 0.8 });
+
+document.querySelectorAll('.section-label').forEach(el => flickerObserver.observe(el));
+
+// inject neonFlicker keyframes
+const style = document.createElement('style');
+style.textContent = `
+@keyframes neonFlicker {
+  0%   { text-shadow: 0 0 4px var(--accent); opacity: 1; }
+  15%  { text-shadow: none; opacity: 0.3; }
+  25%  { text-shadow: 0 0 8px var(--accent); opacity: 1; }
+  35%  { text-shadow: none; opacity: 0.4; }
+  50%  { text-shadow: 0 0 12px var(--accent); opacity: 1; }
+  100% { text-shadow: 0 0 4px rgba(0,229,160,0.4); opacity: 1; }
+}
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
