@@ -268,6 +268,7 @@
   .controls-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    grid-auto-flow: dense;
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
@@ -409,82 +410,14 @@
     margin-bottom: 2rem;
   }
 
-  /* ── INSTALL ── */
-  .install-steps {
-    display: flex;
-    flex-direction: column;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-  }
-
-  .step {
-    background: var(--card-bg);
-    padding: 1.5rem 2rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 1.5rem;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.2s;
-  }
-
-  .step:last-child { border-bottom: none; }
-  .step:hover { background: var(--bg3); }
-
-  .step-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--accent);
-    background: rgba(0,229,160,0.08);
-    border: 1px solid rgba(0,229,160,0.2);
-    border-radius: 50%;
-    width: 32px; height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .step-body h4 {
-    font-family: 'Syne', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-
-  .step-body p {
-    font-size: 0.875rem;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  code {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.8em;
-    background: rgba(255,255,255,0.07);
-    padding: 2px 7px;
-    border-radius: 4px;
-    color: var(--accent);
-  }
-
-  /* ── INFO BOX ── */
-  .info-box {
-    background: rgba(0,137,255,0.07);
-    border: 1px solid rgba(0,137,255,0.2);
+  /* ── AUTO HFT ── */
+  .ah-box {
+    background: rgba(225,20,140,0.06);
+    border: 1px solid rgba(225,20,140,0.2);
     border-radius: 12px;
-    padding: 1.5rem 2rem;
-    margin-top: 2rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
   }
-
-  .info-box p {
-    font-size: 0.85rem;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-
-  .info-box strong { color: var(--accent2); }
 
   /* ── FOOTER ── */
   footer {
@@ -707,18 +640,6 @@
     box-shadow: 0 0 40px rgba(0,229,160,0.06), 0 0 0 1px rgba(0,229,160,0.1);
   }
 
-  /* ── STEP NUM PULSE ── */
-  .step-num {
-    animation: stepPulse 3s ease-in-out infinite;
-  }
-  .step:nth-child(2) .step-num { animation-delay: 1s; }
-  .step:nth-child(3) .step-num { animation-delay: 2s; }
-
-  @keyframes stepPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,160,0.3); }
-    50%       { box-shadow: 0 0 0 6px rgba(0,229,160,0); }
-  }
-
   /* ── SYM PILL ACTIVE GLOW ── */
   .sym-pill.active {
     box-shadow: 0 0 16px rgba(180,100,255,0.25);
@@ -777,6 +698,14 @@
   }
   .lf-box:hover {
     box-shadow: 0 0 32px rgba(255,200,0,0.1), 0 0 0 1px rgba(255,200,0,0.3);
+  }
+
+  /* ── AUTO HFT BOX GLOW ── */
+  .ah-box {
+    transition: box-shadow 0.3s;
+  }
+  .ah-box:hover {
+    box-shadow: 0 0 32px rgba(225,20,140,0.1), 0 0 0 1px rgba(225,20,140,0.3);
   }
 
   /* ── EQUITY BOX GLOW ── */
@@ -1386,12 +1315,6 @@
     .altmagic-box, .eq-box { padding: 1.25rem; }
     .altmagic-box > div { flex-direction: column; gap: 1rem; }
 
-    /* Install steps */
-    .step { padding: 1.25rem; gap: 1rem; }
-    .step-num { width: 28px; height: 28px; font-size: 0.7rem; }
-    .step-body h4 { font-size: 0.95rem; }
-    .step-body p { font-size: 0.82rem; }
-
     /* Footer */
     footer { padding: 2rem 1.25rem; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; }
   }
@@ -1503,6 +1426,15 @@
           Invio di <strong>notifiche push al cellulare</strong> tramite MetaTrader mobile per aperture, chiusure e eventi critici. Separabili tra notifiche generali e notifiche di singolo trade.
         </div>
       </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          Auto HFT — scalping automatico
+        </div>
+        <div class="feature-desc">
+          Un bottone dedicato attiva uno <strong>scalping automatico opzionale</strong>: apre un trade alla volta nella direzione confermata sia dal LED di confluenza multi-timeframe sia dal segnale HFT sul grafico. Resta sotto il tuo controllo — si accende e si spegne con un click, e usa lo stesso motore di breakeven/trailing degli altri profili.
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1530,7 +1462,7 @@
         <div class="profile-detail">5 lotti configurabili<br><span>BE ritardato · TS con step largo</span></div>
       </div>
       <div class="profile-card" data-accent="orange">
-        <div class="profile-tag tag-ssl">SSL</div>
+        <div class="profile-tag tag-ssl">HSL</div>
         <div class="profile-name">Stop Loss fisso</div>
         <div class="profile-desc">Ogni ordine viene aperto con uno stop loss iniziale in pips definito negli input. Utile per strategie che richiedono un rischio per trade fisso e prevedibile sin dall'apertura.</div>
         <div class="profile-detail">5 lotti configurabili<br><span>SL automatico all'apertura · BE &amp; TS opzionali</span></div>
@@ -1595,7 +1527,7 @@
       <div class="ctrl-card">
         <div class="ctrl-btn btn-blue">NoComm</div>
         <div class="ctrl-title">Selezione profilo</div>
-        <div class="ctrl-desc">Ruota ciclicamente tra i profili: § → TRL → HFT → SSL → §TP → §SL. Il profilo attivo determina MagicNumber e lotti usati per i nuovi ordini.</div>
+        <div class="ctrl-desc">Ruota ciclicamente tra i profili: § → TRL → HFT → HSL → §TP → §SL. Il profilo attivo determina MagicNumber e lotti usati per i nuovi ordini.</div>
       </div>
       <div class="ctrl-card">
         <div class="ctrl-btn btn-gray">CLOSE ALL</div>
@@ -1612,10 +1544,15 @@
         <div class="ctrl-title">Chiudi solo SELL</div>
         <div class="ctrl-desc">Chiude tutti i trade in direzione SELL, lasciando aperti i BUY. Rispetta il filtro Pair THIS/ALL.</div>
       </div>
-      <div class="ctrl-card wide">
+      <div class="ctrl-card">
         <div class="ctrl-btn btn-orange">RESET STAT</div>
         <div class="ctrl-title">Reset statistiche</div>
         <div class="ctrl-desc">Azzera i contatori P&L chiusi e reimposta il balance di riferimento per il calcolo delle percentuali. Utile a inizio sessione.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn" style="background:rgba(225,20,140,0.12);color:#ff4db8;border:1px solid rgba(225,20,140,0.3);">AUTO HFT: ON/OFF</div>
+        <div class="ctrl-title">Scalping automatico</div>
+        <div class="ctrl-desc">Attiva/disattiva lo scalping automatico: apre un trade alla volta solo quando il LED di confluenza MTF e il segnale HFT a grafico sono allineati e confermati. Riapre dopo un breve cooldown dalla chiusura del precedente.</div>
       </div>
       <div class="ctrl-card">
         <div class="ctrl-btn btn-yellow">LIMIT FOLLOW</div>
@@ -1720,6 +1657,18 @@
       </div>
     </div>
 
+    <div class="ah-box">
+      <p class="section-label" style="color:#ff4db8;margin-bottom:0.75rem;">Auto HFT — Scalping automatico su confluenza</p>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">
+        Un bottone dedicato attiva una modalità di <strong style="color:var(--text)">scalping completamente automatico</strong>: il pannello apre un trade alla volta nella direzione indicata sia dal <strong style="color:var(--text)">LED di confluenza multi-timeframe</strong> sia dal <strong style="color:var(--text)">segnale HFT</strong> mostrato a grafico, solo quando entrambi sono allineati e confermati. Riapre un nuovo trade solo dopo che il precedente si è chiuso, gestito dallo stesso motore di breakeven/trailing degli altri profili, rispettando un breve cooldown per evitare aperture a raffica. Resta disattivabile in qualsiasi momento con un click.
+      </p>
+      <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff4db8;margin-bottom:4px;">Un trade alla volta</div><div style="font-size:0.8rem;color:var(--muted);">Non apre un nuovo trade finché quello in corso non si è chiuso</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff4db8;margin-bottom:4px;">Cooldown</div><div style="font-size:0.8rem;color:var(--muted);">Attesa minima configurabile tra una chiusura e la successiva apertura</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff4db8;margin-bottom:4px;">BE &amp; TS dedicati</div><div style="font-size:0.8rem;color:var(--muted);">Parametri di breakeven e trailing indipendenti, come per gli altri profili</div></div>
+      </div>
+    </div>
+
     <div class="eq-box">
       <p class="section-label" style="color:#ff6b6b;margin-bottom:0.75rem;">Equity Stop — Protezione conto</p>
       <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;">
@@ -1768,55 +1717,18 @@
   <div class="container">
     <p class="section-label">Selezione profilo</p>
     <h2 class="section-title">Il ciclo NoComm</h2>
-    <p class="section-lead">Il bottone NoComm seleziona quale profilo è attivo per i nuovi ordini. Ruota in sequenza tra tutti i profili disponibili — nessun riavvio necessario.</p>
+    <p class="section-lead">Il bottone NoComm seleziona quale profilo è attivo per gli ordini senza commento. Ruota in sequenza tra tutti i profili disponibili — nessun riavvio necessario.</p>
 
     <div class="nocomm-cycle">
       <div class="nc-step">NoComm §</div>
       <div class="nc-step hi">NoComm TRL</div>
       <div class="nc-step">NoComm HFT</div>
-      <div class="nc-step">NoComm SSL</div>
+      <div class="nc-step">NoComm HSL</div>
       <div class="nc-step">NoComm §TP</div>
       <div class="nc-step">NoComm §SL</div>
     </div>
 
-    <p style="font-size:0.875rem;color:var(--muted);line-height:1.7;max-width:600px;">Il profilo evidenziato è quello attivo. I lotti usati per i nuovi ordini provengono dal relativo gruppo di input. I contatori lotti in basso al pannello mostrano l'esposizione attuale per direzione, aggiornata in tempo reale.</p>
-  </div>
-</section>
-
-<!-- ════ INSTALLAZIONE ════ -->
-<section>
-  <div class="container">
-    <p class="section-label">Installazione</p>
-    <h2 class="section-title">Pronti in tre minuti</h2>
-    <p class="section-lead">GPT Trade Manager si installa come qualsiasi Expert Advisor su MetaTrader 4.</p>
-
-    <div class="install-steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div class="step-body">
-          <h4>Applica al grafico</h4>
-          <p>Trascina l'EA su un grafico qualsiasi. Assicurati di abilitare il <strong>trading automatico</strong> nel terminale e di spuntare <em>"Consenti trading live"</em> nelle proprietà dell'EA.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div class="step-body">
-          <h4>Ricevi il setfile personalizzato</h4>
-          <p>Non configurare gli input a caso — contattami e ti indico il setfile più adatto alla tua operatività. <a href="https://linktr.ee/theponz.eth" target="_blank" style="color:var(--accent);text-decoration:none;font-family:'DM Mono',monospace;font-size:0.85em;">linktr.ee/theponz.eth</a></p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <div class="step-body">
-          <h4>Inserisci i simboli custom</h4>
-          <p>Clicca sui campi editabili sotto SYM1–SYM5 e digita il nome esatto del simbolo come appare nel Market Watch del tuo broker — es. <code>EURUSD.</code> o <code>BTCUSD</code>.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="info-box">
-      <p><strong>Nota:</strong> il tool usa GlobalVariables di MT4 per mantenere lo stato (TS attivo, simbolo selezionato, profilo corrente) anche dopo un ricaricamento del grafico. Le GlobalVariables vengono ripulite automaticamente alla disinstallazione.</p>
-    </div>
+    <p style="font-size:0.875rem;color:var(--muted);line-height:1.7;max-width:600px;">Il profilo evidenziato è quello attivo. I lotti usati per i nuovi ordini provengono dal relativo gruppo di input. I contatori lotti in basso al pannello mostrano l'esposizione attuale per direzione, aggiornata in tempo reale. Un piccolo ritardo di applicazione (configurabile) protegge da click multipli ravvicinati: il bottone mostra subito il nuovo profilo selezionato, ma i trade già aperti continuano a essere gestiti con il profilo precedente finché il cambio non diventa stabile.</p>
   </div>
 </section>
 
@@ -1931,8 +1843,8 @@ document.querySelectorAll('section').forEach((sec, si) => {
   const label   = sec.querySelector('.section-label');
   const title   = sec.querySelector('.section-title');
   const lead    = sec.querySelector('.section-lead');
-  const cards   = sec.querySelectorAll('.profile-card, .ctrl-card, .feature-row, .step, .stat-item');
-  const other   = sec.querySelectorAll('.nocomm-cycle, .sym-row, .stats-bar, .altmagic-box, .eq-box, .lf-box, .info-box');
+  const cards   = sec.querySelectorAll('.profile-card, .ctrl-card, .feature-row, .stat-item');
+  const other   = sec.querySelectorAll('.nocomm-cycle, .sym-row, .stats-bar, .altmagic-box, .eq-box, .lf-box, .ah-box');
 
   [label, title, lead].forEach((el, i) => {
     if (el) { el.classList.add('reveal', 'reveal-delay-' + (i+1)); revealTargets.push(el); }
@@ -2324,7 +2236,7 @@ document.addEventListener('click', e => {
       .onfinish = () => spark.remove();
   }
 
-  // shockwave on ctrl-btn / step-num clicks
+  // shockwave on ctrl-btn clicks
   const btn = e.target.closest('.ctrl-btn, .nc-step, .sym-pill');
   if (btn) {
     btn.classList.remove('shock');
@@ -2369,7 +2281,7 @@ const titleObserver = new IntersectionObserver(entries => {
 document.querySelectorAll('.section-title').forEach(el => titleObserver.observe(el));
 
 /* ── 3D TILT extended to ctrl-cards and step rows ── */
-document.querySelectorAll('.ctrl-card, .step, .feature-row').forEach(card => {
+document.querySelectorAll('.ctrl-card, .feature-row').forEach(card => {
   card.addEventListener('mousemove', e => {
     const rect = card.getBoundingClientRect();
     const cx = rect.left + rect.width  / 2;
