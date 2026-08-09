@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GPT Trade Manager v1.35 — by theponz.eth</title>
+<title>GPT Trade Manager v1.40 — by theponz.eth</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -1267,50 +1267,6 @@
     50%       { transform: translate(50px, -70px) scale(1.2); }
   }
 
-  /* ── TICKER STRIP ── */
-  .ticker-wrap {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    background: var(--bg2);
-    padding: 12px 0;
-    z-index: 1;
-  }
-  .ticker-wrap::before, .ticker-wrap::after {
-    content: '';
-    position: absolute; top: 0; bottom: 0;
-    width: 80px; z-index: 2; pointer-events: none;
-  }
-  .ticker-wrap::before { left: 0;  background: linear-gradient(90deg, var(--bg2), transparent); }
-  .ticker-wrap::after  { right: 0; background: linear-gradient(270deg, var(--bg2), transparent); }
-  .ticker-track {
-    display: flex;
-    width: max-content;
-    animation: tickerScroll 28s linear infinite;
-  }
-  .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
-  .ticker-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    padding: 0 1.75rem;
-    white-space: nowrap;
-    color: var(--muted);
-    border-right: 1px solid var(--border);
-  }
-  .ticker-item .sym { color: var(--text); font-weight: 500; }
-  .ticker-item .up   { color: var(--accent); }
-  .ticker-item .down { color: #ff5555; }
-  .ticker-item .arrow { font-size: 10px; }
-  @keyframes tickerScroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-  }
-
   /* ── SECTION TITLE LETTER STAGGER ── */
   .section-title.letters span {
     display: inline-block;
@@ -1373,7 +1329,6 @@
 
   @media (max-width: 640px) {
     #mouse-glow, .ambient-orb { display: none; }
-    .ticker-item { font-size: 11px; padding: 0 1.25rem; }
   }
 
   @media (max-width: 640px) {
@@ -1482,11 +1437,6 @@
     <div class="scroll-mouse"></div>
     <span>scroll</span>
   </div>
-</div>
-
-<!-- ════ TICKER SIMBOLI ════ -->
-<div class="ticker-wrap">
-  <div class="ticker-track" id="ticker-track"></div>
 </div>
 
 <!-- ════ COSA È ════ -->
@@ -1872,7 +1822,7 @@
 
 <footer>
   <div class="footer-logo"><span>GPT</span> Trade Manager</div>
-  <p class="footer-sub" style="margin-bottom:0.75rem;">v1.35 — Copyright 2026 GPT Trading by theponz.eth</p>
+  <p class="footer-sub" style="margin-bottom:0.75rem;">v1.40 — Copyright 2026 GPT Trading by theponz.eth</p>
   <a href="https://gpttrading.info">gpttrading.info</a>
 </footer>
 <script>
@@ -2435,29 +2385,6 @@ document.querySelectorAll('.ctrl-card, .step, .feature-row').forEach(card => {
   });
 });
 
-/* ── LIVE TICKER STRIP with fake but plausible prices ── */
-(function() {
-  const track = document.getElementById('ticker-track');
-  if (!track) return;
-  const symbols = [
-    { s: 'AUDNZD', p: '1.08421' }, { s: 'EURUSD', p: '1.09873' },
-    { s: 'GBPUSD', p: '1.27215' }, { s: 'XTIUSD', p: '64.32'  },
-    { s: 'BTCUSD', p: '61 240'  }, { s: 'USDJPY', p: '148.62' },
-    { s: 'XAUUSD', p: '2 398.4' }, { s: 'ETHUSD', p: '3 015.7'},
-    { s: 'EURJPY', p: '163.28'  }, { s: 'NAS100', p: '19 842' }
-  ];
-  function buildSet() {
-    let html = '';
-    symbols.forEach(item => {
-      const up = Math.random() > 0.45;
-      const chg = (Math.random() * 0.8).toFixed(2);
-      html += `<div class="ticker-item"><span class="sym">${item.s}</span><span>${item.p}</span><span class="${up ? 'up' : 'down'}"><span class="arrow">${up ? '▲' : '▼'}</span> ${chg}%</span></div>`;
-    });
-    return html;
-  }
-  // duplicate the set for seamless looping
-  track.innerHTML = buildSet() + buildSet();
-})();
 </script>
 </body>
 </html>
