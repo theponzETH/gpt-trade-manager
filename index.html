@@ -1094,6 +1094,408 @@
     50%       { background-position: 100% 50%; }
   }
 
+  /* ══════════════════════════════════════════════
+     WOW EFFECTS PACK — extra layer
+     ══════════════════════════════════════════════ */
+
+  /* ── PRELOADER ── */
+  #preloader {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  .preloader-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    opacity: 0;
+    animation: preloaderFade 0.6s 0.1s ease forwards;
+  }
+  .preloader-logo span { color: var(--accent); }
+  .preloader-bar {
+    width: 200px; height: 2px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    opacity: 0;
+    animation: preloaderFade 0.6s 0.2s ease forwards;
+  }
+  .preloader-bar::after {
+    content: '';
+    position: absolute; inset: 0 100% 0 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    animation: preloaderLoad 1.3s cubic-bezier(0.65,0,0.35,1) 0.3s forwards;
+    box-shadow: 0 0 12px rgba(0,229,160,0.5);
+  }
+  .preloader-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    animation: preloaderFade 0.6s 0.2s ease forwards;
+  }
+  @keyframes preloaderFade { to { opacity: 1; } }
+  @keyframes preloaderLoad { to { right: 0; } }
+
+  /* ── SCROLL PROGRESS BAR ── */
+  #scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), #c084fc);
+    background-size: 200% 100%;
+    z-index: 9996;
+    box-shadow: 0 0 10px rgba(0,229,160,0.5);
+    animation: progressGradient 3s linear infinite;
+    transition: width 0.08s linear;
+  }
+  @keyframes progressGradient {
+    0%   { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* ── CLICK RIPPLE ── */
+  .click-ripple {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9995;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(0,229,160,0.6);
+    background: radial-gradient(circle, rgba(0,229,160,0.15) 0%, transparent 70%);
+    animation: rippleExpand 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  @keyframes rippleExpand {
+    from { width: 0; height: 0; opacity: 0.9; }
+    to   { width: 260px; height: 260px; opacity: 0; }
+  }
+
+  /* ── CLICK SPARK PARTICLES ── */
+  .click-spark {
+    position: fixed;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9995;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── ANIMATED CONIC BORDER (profile & ctrl cards) ── */
+  .profile-card, .ctrl-card {
+    --border-angle: 0deg;
+    position: relative;
+    z-index: 0;
+  }
+  .profile-card::after, .ctrl-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--border-angle), transparent 0%, rgba(0,229,160,0.7) 8%, transparent 18%, transparent 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 2;
+    animation: borderSpin 3s linear infinite;
+  }
+  .profile-card:hover::after, .ctrl-card:hover::after { opacity: 1; }
+  @property --border-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+  @keyframes borderSpin {
+    to { --border-angle: 360deg; }
+  }
+
+  /* ── ICON STROKE-DRAW REVEAL ── */
+  .feature-name .icon path,
+  .feature-name .icon circle,
+  .feature-name .icon rect {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+  }
+  .feature-row.icon-drawn .icon path,
+  .feature-row.icon-drawn .icon circle,
+  .feature-row.icon-drawn .icon rect {
+    animation: drawIcon 0.9s ease forwards;
+  }
+  @keyframes drawIcon {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* ── AMBIENT FLOATING ORBS (whole page depth) ── */
+  .ambient-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.35;
+    will-change: transform;
+  }
+  #orb1 { width: 420px; height: 420px; background: rgba(0,229,160,0.14); top: 5%;  left: -10%; animation: orbDrift1 26s ease-in-out infinite; }
+  #orb2 { width: 380px; height: 380px; background: rgba(0,137,255,0.12); top: 55%; right: -8%; animation: orbDrift2 32s ease-in-out infinite; }
+  #orb3 { width: 300px; height: 300px; background: rgba(180,100,255,0.10); bottom: 5%; left: 30%; animation: orbDrift3 22s ease-in-out infinite; }
+  @keyframes orbDrift1 {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50%       { transform: translate(80px, 60px) scale(1.15); }
+  }
+  @keyframes orbDrift2 {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50%       { transform: translate(-70px, -50px) scale(1.1); }
+  }
+  @keyframes orbDrift3 {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50%       { transform: translate(50px, -70px) scale(1.2); }
+  }
+
+  /* ── TICKER STRIP ── */
+  .ticker-wrap {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    padding: 12px 0;
+    z-index: 1;
+  }
+  .ticker-wrap::before, .ticker-wrap::after {
+    content: '';
+    position: absolute; top: 0; bottom: 0;
+    width: 80px; z-index: 2; pointer-events: none;
+  }
+  .ticker-wrap::before { left: 0;  background: linear-gradient(90deg, var(--bg2), transparent); }
+  .ticker-wrap::after  { right: 0; background: linear-gradient(270deg, var(--bg2), transparent); }
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    animation: tickerScroll 28s linear infinite;
+  }
+  .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
+  .ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 0 1.75rem;
+    white-space: nowrap;
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+  }
+  .ticker-item .sym { color: var(--text); font-weight: 500; }
+  .ticker-item .up   { color: var(--accent); }
+  .ticker-item .down { color: #ff5555; }
+  .ticker-item .arrow { font-size: 10px; }
+  @keyframes tickerScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ── SECTION TITLE LETTER STAGGER ── */
+  .section-title.letters span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.4em) rotateZ(4deg);
+    filter: blur(4px);
+  }
+  .section-title.letters.play span {
+    animation: letterIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  @keyframes letterIn {
+    to { opacity: 1; transform: translateY(0) rotateZ(0); filter: blur(0); }
+  }
+
+  /* ── MOUSE GLOW BLOB (large, follows cursor across whole page) ── */
+  #mouse-glow {
+    position: fixed;
+    top: 0; left: 0;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,160,0.05) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 0.3s;
+  }
+
+  /* ── BUTTON PRESS SHOCKWAVE for ctrl-btn ── */
+  .ctrl-btn { position: relative; overflow: visible; }
+  .ctrl-btn.shock::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    border: 1px solid currentColor;
+    opacity: 0.8;
+    animation: shockwave 0.5s ease-out forwards;
+  }
+  @keyframes shockwave {
+    to { inset: -14px; opacity: 0; }
+  }
+
+  /* ── STAT ITEM HOVER LIFT ── */
+  .stat-item { transition: transform 0.25s cubic-bezier(0.23,1,0.32,1); cursor: default; }
+  .stat-item:hover { transform: translateY(-3px); }
+
+  /* ── SVG LOGO PULSE MARK for footer ── */
+  .footer-logo { position: relative; display: inline-block; }
+  .footer-logo::before {
+    content: '';
+    position: absolute;
+    left: -14px; top: 50%;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  /* ══════════════════════════════════════════════
+     ULTRA PRO PACK — shader bg, gooey cursor, glass, impact
+     ══════════════════════════════════════════════ */
+
+  /* ── WEBGL PLASMA BACKGROUND ── */
+  #webgl-bg {
+    position: fixed;
+    inset: 0;
+    width: 100vw; height: 100vh;
+    z-index: -3;
+    opacity: 0.55;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  /* ── GOOEY LIQUID CURSOR ── */
+  #goo-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9994;
+    filter: url(#goo-filter);
+    mix-blend-mode: screen;
+  }
+  .goo-blob {
+    position: absolute;
+    top: 0; left: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(0,255,200,0.95), rgba(0,137,255,0.5) 60%, transparent 100%);
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── PAGE CONTENT WRAPPER (for safe shake, keeps fixed overlays intact) ── */
+  #page-content {
+    position: relative;
+    transform-origin: center center;
+  }
+  #page-content.impact-active {
+    animation: impactShake 0.4s ease;
+  }
+  @keyframes impactShake {
+    0%   { transform: translate(0,0); }
+    18%  { transform: translate(-5px, 3px) rotate(-0.2deg); }
+    36%  { transform: translate(4px, -3px) rotate(0.2deg); }
+    54%  { transform: translate(-3px, 2px); }
+    72%  { transform: translate(2px, -1px); }
+    100% { transform: translate(0,0) rotate(0); }
+  }
+
+  /* ── CHROMATIC ABERRATION FLASH ── */
+  #chroma-flash {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9993;
+    opacity: 0;
+    mix-blend-mode: screen;
+    background:
+      radial-gradient(circle at var(--fx,50%) var(--fy,50%), rgba(255,40,80,0.12), transparent 35%),
+      radial-gradient(circle at calc(var(--fx,50%) + 1.2%) var(--fy,50%), rgba(0,180,255,0.12), transparent 35%);
+  }
+  #chroma-flash.flash-active {
+    animation: chromaFlash 0.4s ease;
+  }
+  @keyframes chromaFlash {
+    0%   { opacity: 0; }
+    25%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* ── GLASSMORPHISM CARDS w/ mouse-reactive sheen ── */
+  .profile-card, .ctrl-card, .feature-row, .step {
+    background:
+      radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.07), transparent 55%),
+      rgba(17,21,32,0.62);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+  }
+  .profile-card:hover, .ctrl-card:hover, .feature-row:hover, .step:hover {
+    background:
+      radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.1), transparent 55%),
+      rgba(22,27,40,0.68);
+  }
+
+  /* ── MAGNETIC HERO SUBTITLE WORDS ── */
+  .magword {
+    display: inline-block;
+    transition: transform 0.18s cubic-bezier(0.23,1,0.32,1);
+    will-change: transform;
+  }
+
+  /* ── SCROLL COVERFLOW on sections ── */
+  section {
+    will-change: transform;
+    transform-style: preserve-3d;
+  }
+
+  /* ── HOLOGRAPHIC SWEEP on badge & sym-pill.active ── */
+  .badge, .sym-pill.active {
+    position: relative;
+    overflow: hidden;
+  }
+  .badge::before, .sym-pill.active::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -20%;
+    width: 30%; height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transform: skewX(-20deg);
+    animation: holoSweep 3.5s ease-in-out infinite;
+  }
+  @keyframes holoSweep {
+    0%, 60%, 100% { left: -30%; }
+    80%            { left: 130%; }
+  }
+
+  /* ── DEPTH-OF-FIELD blur on distant orbs when scrolling fast (JS toggled class) ── */
+  .fast-scroll .ambient-orb { filter: blur(120px); transition: filter 0.3s; }
+  .ambient-orb { transition: filter 0.4s; }
+
+  @media (max-width: 640px) {
+    #mouse-glow, .ambient-orb, #webgl-bg, #goo-container { display: none; }
+    .ticker-item { font-size: 11px; padding: 0 1.25rem; }
+    section { transform: none !important; }
+  }
+
   @media (max-width: 640px) {
     /* Hero */
     .hero { padding: 4rem 1.25rem 2.5rem; }
@@ -1162,8 +1564,37 @@
 </head>
 <body>
 
+<!-- ════ PRELOADER ════ -->
+<div id="preloader">
+  <div class="preloader-logo"><span>GPT</span> Trade Manager</div>
+  <div class="preloader-bar"></div>
+  <div class="preloader-pct">CARICAMENTO INTERFACCIA…</div>
+</div>
+
+<canvas id="webgl-bg"></canvas>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <filter id="goo-filter">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -11" result="goo" />
+      <feBlend in="SourceGraphic" in2="goo" />
+    </filter>
+  </defs>
+</svg>
+<div id="goo-container"></div>
+
+<div id="scroll-progress"></div>
+<div id="mouse-glow"></div>
+<div id="chroma-flash"></div>
+<div class="ambient-orb" id="orb1"></div>
+<div class="ambient-orb" id="orb2"></div>
+<div class="ambient-orb" id="orb3"></div>
+
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
+
+<div id="page-content">
 
 <!-- ════ HERO ════ -->
 <div class="hero">
@@ -1176,7 +1607,7 @@
   </div>
 
   <h1 data-text="GPT Trade Manager">
-    <span class="gpt">GPT</span><br>Trade Manager
+    <span class="gpt">GPT</span><br><span class="tm">Trade Manager</span>
   </h1>
 
   <p class="hero-sub">
@@ -1187,6 +1618,11 @@
     <div class="scroll-mouse"></div>
     <span>scroll</span>
   </div>
+</div>
+
+<!-- ════ TICKER SIMBOLI ════ -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="ticker-track"></div>
 </div>
 
 <!-- ════ COSA È ════ -->
@@ -1575,6 +2011,9 @@
   <p class="footer-sub" style="margin-bottom:0.75rem;">v1.35 — Copyright 2026 GPT Trading by theponz.eth</p>
   <a href="https://gpttrading.info">gpttrading.info</a>
 </footer>
+
+</div><!-- /#page-content -->
+
 <script>
 /* ── CUSTOM CURSOR ── */
 const cursor = document.getElementById('cursor');
@@ -2002,6 +2441,397 @@ style.textContent = `
 }
 `;
 document.head.appendChild(style);
+
+/* ══════════════════════════════════════════════
+   WOW EFFECTS PACK — extra JS
+   ══════════════════════════════════════════════ */
+
+/* ── PRELOADER ── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('hidden');
+  }, 1400);
+});
+/* fallback in case load already fired */
+if (document.readyState === 'complete') {
+  setTimeout(() => document.getElementById('preloader').classList.add('hidden'), 1400);
+}
+
+/* ── SCROLL PROGRESS BAR ── */
+const progressBar = document.getElementById('scroll-progress');
+function updateProgress() {
+  const h = document.documentElement;
+  const scrolled = h.scrollTop;
+  const height = h.scrollHeight - h.clientHeight;
+  const pct = height > 0 ? (scrolled / height) * 100 : 0;
+  progressBar.style.width = pct + '%';
+}
+document.addEventListener('scroll', updateProgress, { passive: true });
+updateProgress();
+
+/* ── MOUSE GLOW BLOB (whole page) ── */
+const mouseGlow = document.getElementById('mouse-glow');
+let gx = window.innerWidth / 2, gy = window.innerHeight / 2, cgx = gx, cgy = gy;
+document.addEventListener('mousemove', e => { gx = e.clientX; gy = e.clientY; });
+(function animateGlow() {
+  cgx += (gx - cgx) * 0.08;
+  cgy += (gy - cgy) * 0.08;
+  mouseGlow.style.transform = `translate(${cgx - 250}px, ${cgy - 250}px)`;
+  requestAnimationFrame(animateGlow);
+})();
+
+/* ── CLICK RIPPLE + SPARK BURST ── */
+const rippleColors = ['#00e5a0', '#0089ff', '#c084fc', '#ffffff'];
+document.addEventListener('click', e => {
+  // ripple ring
+  const ripple = document.createElement('div');
+  ripple.className = 'click-ripple';
+  ripple.style.left = e.clientX + 'px';
+  ripple.style.top  = e.clientY + 'px';
+  document.body.appendChild(ripple);
+  ripple.addEventListener('animationend', () => ripple.remove());
+
+  // spark particles
+  const sparkCount = 10;
+  for (let i = 0; i < sparkCount; i++) {
+    const spark = document.createElement('div');
+    spark.className = 'click-spark';
+    const angle = (Math.PI * 2 * i) / sparkCount + Math.random() * 0.4;
+    const dist = 30 + Math.random() * 50;
+    const color = rippleColors[Math.floor(Math.random() * rippleColors.length)];
+    spark.style.left = e.clientX + 'px';
+    spark.style.top  = e.clientY + 'px';
+    spark.style.background = color;
+    spark.style.boxShadow = `0 0 6px ${color}`;
+    document.body.appendChild(spark);
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;
+    spark.animate([
+      { transform: 'translate(-50%,-50%) translate(0,0) scale(1)', opacity: 1 },
+      { transform: `translate(-50%,-50%) translate(${dx}px, ${dy}px) scale(0)`, opacity: 0 }
+    ], { duration: 550 + Math.random() * 250, easing: 'cubic-bezier(0.16,1,0.3,1)' })
+      .onfinish = () => spark.remove();
+  }
+
+  // shockwave on ctrl-btn / step-num clicks
+  const btn = e.target.closest('.ctrl-btn, .nc-step, .sym-pill');
+  if (btn) {
+    btn.classList.remove('shock');
+    void btn.offsetWidth;
+    btn.classList.add('shock');
+  }
+});
+
+/* ── ICON STROKE-DRAW on scroll into view ── */
+const iconObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('icon-drawn');
+      iconObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('.feature-row').forEach(el => iconObserver.observe(el));
+
+/* ── SECTION TITLE LETTER STAGGER ── */
+document.querySelectorAll('.section-title').forEach(title => {
+  const text = title.textContent;
+  title.innerHTML = '';
+  title.classList.add('letters');
+  let delay = 0;
+  text.split('').forEach(ch => {
+    const span = document.createElement('span');
+    span.textContent = ch === ' ' ? '\u00A0' : ch;
+    span.style.animationDelay = (delay * 0.018) + 's';
+    title.appendChild(span);
+    delay++;
+  });
+});
+const titleObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('play');
+      titleObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.section-title').forEach(el => titleObserver.observe(el));
+
+/* ── 3D TILT extended to ctrl-cards and step rows ── */
+document.querySelectorAll('.ctrl-card, .step, .feature-row').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width  / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    card.style.transform = `perspective(800px) rotateY(${dx * 3}deg) rotateX(${-dy * 3}deg)`;
+    card.style.transition = 'transform 0.1s';
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.transition = 'transform 0.4s cubic-bezier(0.23,1,0.32,1)';
+  });
+});
+
+/* ── LIVE TICKER STRIP with fake but plausible prices ── */
+(function() {
+  const track = document.getElementById('ticker-track');
+  if (!track) return;
+  const symbols = [
+    { s: 'AUDNZD', p: '1.08421' }, { s: 'EURUSD', p: '1.09873' },
+    { s: 'GBPUSD', p: '1.27215' }, { s: 'XTIUSD', p: '64.32'  },
+    { s: 'BTCUSD', p: '61 240'  }, { s: 'USDJPY', p: '148.62' },
+    { s: 'XAUUSD', p: '2 398.4' }, { s: 'ETHUSD', p: '3 015.7'},
+    { s: 'EURJPY', p: '163.28'  }, { s: 'NAS100', p: '19 842' }
+  ];
+  function buildSet() {
+    let html = '';
+    symbols.forEach(item => {
+      const up = Math.random() > 0.45;
+      const chg = (Math.random() * 0.8).toFixed(2);
+      html += `<div class="ticker-item"><span class="sym">${item.s}</span><span>${item.p}</span><span class="${up ? 'up' : 'down'}"><span class="arrow">${up ? '▲' : '▼'}</span> ${chg}%</span></div>`;
+    });
+    return html;
+  }
+  // duplicate the set for seamless looping
+  track.innerHTML = buildSet() + buildSet();
+})();
+
+/* ══════════════════════════════════════════════
+   ULTRA PRO PACK — shader background, gooey cursor, impact fx
+   ══════════════════════════════════════════════ */
+
+/* ── WEBGL PLASMA BACKGROUND ── */
+(function() {
+  const canvas = document.getElementById('webgl-bg');
+  if (!canvas) return;
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) { canvas.style.display = 'none'; return; }
+
+  const vsSource = `
+    attribute vec2 a_position;
+    void main() {
+      gl_Position = vec4(a_position, 0.0, 1.0);
+    }
+  `;
+  const fsSource = `
+    precision highp float;
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    uniform vec2 u_mouse;
+
+    vec3 palette(float t) {
+      vec3 a = vec3(0.04, 0.05, 0.09);
+      vec3 b = vec3(0.20, 0.35, 0.30);
+      vec3 c = vec3(1.0, 0.9, 1.0);
+      vec3 d = vec3(0.30, 0.55, 0.75);
+      return a + b * cos(6.28318 * (c * t + d));
+    }
+
+    void main() {
+      vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
+      vec2 mouse = (u_mouse - 0.5 * u_resolution.xy) / u_resolution.y;
+      float t = u_time * 0.05;
+
+      float v = 0.0;
+      v += sin((uv.x + t) * 6.0);
+      v += sin((uv.y + t) * 5.0);
+      v += sin((uv.x + uv.y + t) * 7.0);
+      float md = length(uv - mouse);
+      v += sin(md * 9.0 - u_time * 0.8) * (1.0 / (1.0 + md * 3.0)) * 2.0;
+      v *= 0.22;
+
+      vec3 col = palette(v + t);
+      float vig = smoothstep(1.3, 0.15, length(uv));
+      col *= vig;
+
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+
+  function compileShader(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      console.warn('Shader compile error:', gl.getShaderInfoLog(s));
+      return null;
+    }
+    return s;
+  }
+
+  const vs = compileShader(gl.VERTEX_SHADER, vsSource);
+  const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
+  if (!vs || !fs) { canvas.style.display = 'none'; return; }
+
+  const program = gl.createProgram();
+  gl.attachShader(program, vs);
+  gl.attachShader(program, fs);
+  gl.linkProgram(program);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.warn('Program link error:', gl.getProgramInfoLog(program));
+    canvas.style.display = 'none';
+    return;
+  }
+  gl.useProgram(program);
+
+  const posBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+  const posLoc = gl.getAttribLocation(program, 'a_position');
+  gl.enableVertexAttribArray(posLoc);
+  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+  const u_res   = gl.getUniformLocation(program, 'u_resolution');
+  const u_time  = gl.getUniformLocation(program, 'u_time');
+  const u_mouse = gl.getUniformLocation(program, 'u_mouse');
+
+  let mgx = window.innerWidth / 2, mgy = window.innerHeight / 2;
+  document.addEventListener('mousemove', e => { mgx = e.clientX; mgy = e.clientY; });
+
+  function resizeGL() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  resizeGL();
+  window.addEventListener('resize', resizeGL);
+
+  function renderGL(t) {
+    gl.uniform2f(u_res, canvas.width, canvas.height);
+    gl.uniform1f(u_time, t * 0.001);
+    gl.uniform2f(u_mouse, mgx, canvas.height - mgy);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    requestAnimationFrame(renderGL);
+  }
+  requestAnimationFrame(renderGL);
+})();
+
+/* ── GOOEY LIQUID CURSOR CHAIN ── */
+(function() {
+  const container = document.getElementById('goo-container');
+  if (!container) return;
+  const N = 7;
+  const blobs = [];
+  for (let i = 0; i < N; i++) {
+    const b = document.createElement('div');
+    b.className = 'goo-blob';
+    const size = 24 - i * 2.4;
+    b.style.width = size + 'px';
+    b.style.height = size + 'px';
+    container.appendChild(b);
+    blobs.push({ el: b, x: -100, y: -100 });
+  }
+  let gtx = -100, gty = -100;
+  document.addEventListener('mousemove', e => { gtx = e.clientX; gty = e.clientY; });
+  function gooLoop() {
+    let px = gtx, py = gty;
+    blobs.forEach(b => {
+      b.x += (px - b.x) * 0.32;
+      b.y += (py - b.y) * 0.32;
+      b.el.style.transform = `translate(${b.x}px, ${b.y}px) translate(-50%,-50%)`;
+      px = b.x; py = b.y;
+    });
+    requestAnimationFrame(gooLoop);
+  }
+  gooLoop();
+})();
+
+/* ── HERO TITLE DECRYPT REVEAL (reuses scrambleText) ── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const gptEl = document.querySelector('.hero h1 .gpt');
+    const tmEl  = document.querySelector('.hero h1 .tm');
+    if (gptEl) scrambleText(gptEl);
+    if (tmEl) setTimeout(() => scrambleText(tmEl), 150);
+  }, 1500);
+});
+
+/* ── MAGNETIC HERO SUBTITLE (words repel from cursor) ── */
+(function() {
+  const sub = document.querySelector('.hero-sub');
+  if (!sub) return;
+  const words = sub.textContent.trim().split(/\s+/);
+  sub.innerHTML = words.map(w => `<span class="magword">${w}</span>`).join(' ');
+  const magWords = sub.querySelectorAll('.magword');
+  let mmx = -9999, mmy = -9999;
+  document.addEventListener('mousemove', e => { mmx = e.clientX; mmy = e.clientY; });
+  function magLoop() {
+    magWords.forEach(w => {
+      const r = w.getBoundingClientRect();
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      const dx = cx - mmx, dy = cy - mmy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const radius = 85;
+      if (dist < radius) {
+        const force = (1 - dist / radius) * 12;
+        const angle = Math.atan2(dy, dx);
+        w.style.transform = `translate(${Math.cos(angle) * force}px, ${Math.sin(angle) * force}px)`;
+      } else {
+        w.style.transform = '';
+      }
+    });
+    requestAnimationFrame(magLoop);
+  }
+  magLoop();
+})();
+
+/* ── SCROLL COVERFLOW: 3D tilt on sections based on viewport position ── */
+(function() {
+  const tiltSections = document.querySelectorAll('section');
+  let lastY = window.scrollY, lastT = performance.now();
+  function updateSectionTilt() {
+    const vh = window.innerHeight;
+    tiltSections.forEach(sec => {
+      const r = sec.getBoundingClientRect();
+      const centerY = r.top + r.height / 2;
+      let norm = (centerY - vh / 2) / (vh / 2);
+      norm = Math.max(-1, Math.min(1, norm));
+      sec.style.transform = `perspective(1400px) rotateX(${norm * -3.5}deg) scale(${1 - Math.abs(norm) * 0.015})`;
+    });
+    const now = performance.now();
+    const dy = Math.abs(window.scrollY - lastY);
+    const dt = now - lastT;
+    const speed = dt > 0 ? dy / dt : 0;
+    document.body.classList.toggle('fast-scroll', speed > 1.6);
+    lastY = window.scrollY;
+    lastT = now;
+  }
+  document.addEventListener('scroll', updateSectionTilt, { passive: true });
+  window.addEventListener('resize', updateSectionTilt);
+  updateSectionTilt();
+})();
+
+/* ── CLICK IMPACT: chromatic aberration flash + camera shake ── */
+(function() {
+  const pageContent = document.getElementById('page-content');
+  const chroma = document.getElementById('chroma-flash');
+  if (!pageContent || !chroma) return;
+  document.addEventListener('click', e => {
+    const fx = (e.clientX / window.innerWidth) * 100;
+    const fy = (e.clientY / window.innerHeight) * 100;
+    chroma.style.setProperty('--fx', fx + '%');
+    chroma.style.setProperty('--fy', fy + '%');
+    chroma.classList.remove('flash-active');
+    pageContent.classList.remove('impact-active');
+    void chroma.offsetWidth;
+    void pageContent.offsetWidth;
+    chroma.classList.add('flash-active');
+    pageContent.classList.add('impact-active');
+  });
+})();
+
+/* ── GLASS CARD SPOTLIGHT (mouse-reactive radial highlight) ── */
+document.querySelectorAll('.profile-card, .ctrl-card, .feature-row, .step').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const px = ((e.clientX - rect.left) / rect.width) * 100;
+    const py = ((e.clientY - rect.top) / rect.height) * 100;
+    card.style.setProperty('--mx', px + '%');
+    card.style.setProperty('--my', py + '%');
+  });
+});
 </script>
 </body>
 </html>
