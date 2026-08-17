@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GPT Trade Manager v1.40 — by theponz.eth</title>
+<title>GPT Trade Manager v1.41 — by theponz.eth</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -419,6 +419,24 @@
     margin-bottom: 2rem;
   }
 
+  /* ── SCHEDULED PUSH ── */
+  .sp-box {
+    background: rgba(0,137,255,0.05);
+    border: 1px solid rgba(0,137,255,0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ── STATS PANEL ── */
+  .stat-panel-box {
+    background: rgba(228,196,80,0.06);
+    border: 1px solid rgba(228,196,80,0.25);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
   /* ── FOOTER ── */
   footer {
     border-top: 1px solid var(--border);
@@ -706,6 +724,22 @@
   }
   .ah-box:hover {
     box-shadow: 0 0 32px rgba(225,20,140,0.1), 0 0 0 1px rgba(225,20,140,0.3);
+  }
+
+  /* ── SCHEDULED PUSH BOX GLOW ── */
+  .sp-box {
+    transition: box-shadow 0.3s;
+  }
+  .sp-box:hover {
+    box-shadow: 0 0 32px rgba(0,137,255,0.1), 0 0 0 1px rgba(0,137,255,0.3);
+  }
+
+  /* ── STATS PANEL BOX GLOW ── */
+  .stat-panel-box {
+    transition: box-shadow 0.3s;
+  }
+  .stat-panel-box:hover {
+    box-shadow: 0 0 32px rgba(228,196,80,0.1), 0 0 0 1px rgba(228,196,80,0.3);
   }
 
   /* ── EQUITY BOX GLOW ── */
@@ -1429,10 +1463,19 @@
       <div class="feature-row">
         <div class="feature-name">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-          Auto HFT — scalping automatico
+          Auto HFT — scalping automatico BUY/SELL indipendenti
         </div>
         <div class="feature-desc">
-          Un bottone dedicato attiva uno <strong>scalping automatico opzionale</strong>: apre un trade alla volta nella direzione confermata sia dal LED di confluenza multi-timeframe sia dal segnale HFT sul grafico. Resta sotto il tuo controllo — si accende e si spegne con un click, e usa lo stesso motore di breakeven/trailing degli altri profili.
+          Due bottoni dedicati — <strong>AHFT BUY</strong> e <strong>AHFT SELL</strong> — attivano lo scalping automatico separatamente per direzione: puoi lasciare acceso solo un lato, entrambi, o nessuno. Un terzo bottone, <strong>LED AHFT</strong>, decide se richiedere anche la conferma del LED di confluenza multi-timeframe oppure basarsi solo sul segnale HFT a grafico. Resta sotto il tuo controllo in ogni momento e usa lo stesso motore di breakeven/trailing degli altri profili.
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Notifiche push programmate
+        </div>
+        <div class="feature-desc">
+          Fino a <strong>10 notifiche push a orario fisso</strong> configurabili negli input, ciascuna con il proprio testo — utili per promemoria come la chiusura di una candela H4 o l'orario di riapertura dei mercati. Ognuna parte una sola volta al giorno, all'orario impostato.
         </div>
       </div>
     </div>
@@ -1550,17 +1593,27 @@
         <div class="ctrl-desc">Azzera i contatori P&L chiusi e reimposta il balance di riferimento per il calcolo delle percentuali. Utile a inizio sessione.</div>
       </div>
       <div class="ctrl-card">
-        <div class="ctrl-btn" style="background:rgba(225,20,140,0.12);color:#ff4db8;border:1px solid rgba(225,20,140,0.3);">AUTO HFT: ON/OFF</div>
-        <div class="ctrl-title">Scalping automatico</div>
-        <div class="ctrl-desc">Attiva/disattiva lo scalping automatico: apre un trade alla volta solo quando il LED di confluenza MTF e il segnale HFT a grafico sono allineati e confermati. Riapre dopo un breve cooldown dalla chiusura del precedente.</div>
+        <div class="ctrl-btn" style="background:rgba(225,20,140,0.12);color:#ff4db8;border:1px solid rgba(225,20,140,0.3);">AHFT BUY: ON/OFF</div>
+        <div class="ctrl-title">Auto HFT — lato BUY</div>
+        <div class="ctrl-desc">Attiva/disattiva lo scalping automatico solo lato BUY: apre un trade alla volta in base al segnale HFT (e al LED, se il filtro LED AHFT è ON). Indipendente dal lato SELL.</div>
       </div>
       <div class="ctrl-card">
-        <div class="ctrl-btn btn-yellow">LIMIT FOLLOW</div>
-        <div class="ctrl-title">Limit Follow ON/OFF</div>
+        <div class="ctrl-btn" style="background:rgba(225,20,140,0.12);color:#ff4db8;border:1px solid rgba(225,20,140,0.3);">AHFT SELL: ON/OFF</div>
+        <div class="ctrl-title">Auto HFT — lato SELL</div>
+        <div class="ctrl-desc">Attiva/disattiva lo scalping automatico solo lato SELL: apre un trade alla volta in base al segnale HFT (e al LED, se il filtro LED AHFT è ON). Indipendente dal lato BUY.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn" style="background:rgba(70,180,190,0.14);color:#4fc4d0;border:1px solid rgba(70,180,190,0.3);">LED AHFT: ON/OFF</div>
+        <div class="ctrl-title">Filtro LED per Auto HFT</div>
+        <div class="ctrl-desc">Se ON, AHFT BUY/SELL richiede anche il LED di confluenza MTF a favore. Se OFF, ignora il LED e si basa solo sul segnale HFT a grafico.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn" style="background:rgba(0,130,140,0.14);color:#00c2d1;border:1px solid rgba(0,130,140,0.3);">LF: ON/OFF</div>
+        <div class="ctrl-title">Limit Follow</div>
         <div class="ctrl-desc">Attiva l'inseguimento automatico del pending Sell/Buy Limit sul simbolo operativo, riaprendo un trade HFT nella direzione indicata ogni volta che si chiude.</div>
       </div>
       <div class="ctrl-card">
-        <div class="ctrl-btn btn-yellow">ONLY LED</div>
+        <div class="ctrl-btn" style="background:rgba(70,180,190,0.14);color:#4fc4d0;border:1px solid rgba(70,180,190,0.3);">LF LED: ON/OFF</div>
         <div class="ctrl-title">Filtro LED per Limit Follow</div>
         <div class="ctrl-desc">Se attivo, Limit Follow apre un nuovo trade solo quando il LED di confluenza MTF conferma la direzione del pending seguito.</div>
       </div>
@@ -1568,6 +1621,11 @@
         <div class="ctrl-btn btn-gray">STAT: SOLO EA / TUTTI</div>
         <div class="ctrl-title">Scope statistiche</div>
         <div class="ctrl-desc"><em>Solo EA</em>: la barra statistiche conta solo i trade del pannello. <em>Tutti</em>: conta ogni ordine presente sul conto, di qualsiasi bot o apertura manuale.</div>
+      </div>
+      <div class="ctrl-card wide">
+        <div class="ctrl-btn" style="background:rgba(255,200,0,0.12);color:#ffc800;border:1px solid rgba(255,200,0,0.3);">STAT</div>
+        <div class="ctrl-title">Pannello Statistiche Giornata</div>
+        <div class="ctrl-desc">Mostra/nasconde un pannello a fianco del dashboard con il conteggio dei trade aperti oggi per ciascun profilo (HFT, AHFT, TRL, HSL, §, §TP, §SL, LF, NoComm), il totale modifiche SL/TP e il totale trade complessivo.</div>
       </div>
     </div>
 
@@ -1648,10 +1706,11 @@
     <div class="lf-box">
       <p class="section-label" style="color:#ffc800;margin-bottom:0.75rem;">Limit Follow — HFT automatico su pending</p>
       <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">
-        Individua automaticamente sul simbolo operativo il pending <strong style="color:var(--text)">Sell Limit</strong> o <strong style="color:var(--text)">Buy Limit</strong> più vicino al prezzo corrente e apre ripetutamente un trade HFT nella direzione che punta il pending — Sell Limit sopra il prezzo → HFT BUY, Buy Limit sotto il prezzo → HFT SELL. Ogni volta che il trade si chiude, se il pending resta valido, ne apre uno nuovo, in un ciclo continuo gestito dal normale motore BE/TS con parametri dedicati.
+        Individua automaticamente sul simbolo operativo il pending <strong style="color:var(--text)">Sell Limit</strong> o <strong style="color:var(--text)">Buy Limit</strong> più vicino al prezzo corrente e apre ripetutamente un trade HFT nella direzione che punta il pending — Sell Limit sopra il prezzo → HFT BUY, Buy Limit sotto il prezzo → HFT SELL. Ogni volta che il trade si chiude, se il pending resta valido, ne apre uno nuovo, in un ciclo continuo gestito dal normale motore BE/TS con parametri dedicati. La modalità <strong style="color:var(--text)">Max Mode</strong> decide se BUY e SELL condividono un unico slot (un solo trade Limit Follow alla volta, su un solo lato) oppure se possono coesistere indipendentemente — uno per il pending BUY e uno per il pending SELL.
       </p>
       <div style="display:flex;gap:2rem;flex-wrap:wrap;">
-        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">Only LED</div><div style="font-size:0.8rem;color:var(--muted);">Filtro opzionale: apre un nuovo trade solo se il LED di confluenza MTF è a favore della direzione</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">Max Mode</div><div style="font-size:0.8rem;color:var(--muted);">1 trade totale (BUY o SELL, mai insieme) oppure 1 BUY + 1 SELL indipendenti e simultanei</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">LF LED</div><div style="font-size:0.8rem;color:var(--muted);">Filtro opzionale: apre un nuovo trade solo se il LED di confluenza MTF è a favore della direzione</div></div>
         <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">Close on Activate</div><div style="font-size:0.8rem;color:var(--muted);">Chiude il trade HFT aperto quando il pending seguito si attiva e diventa un trade di mercato</div></div>
         <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">Close on Cancel</div><div style="font-size:0.8rem;color:var(--muted);">Chiude il trade HFT aperto quando il pending seguito viene cancellato dal mercato</div></div>
       </div>
@@ -1660,13 +1719,32 @@
     <div class="ah-box">
       <p class="section-label" style="color:#ff4db8;margin-bottom:0.75rem;">Auto HFT — Scalping automatico su confluenza</p>
       <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">
-        Un bottone dedicato attiva una modalità di <strong style="color:var(--text)">scalping completamente automatico</strong>: il pannello apre un trade alla volta nella direzione indicata sia dal <strong style="color:var(--text)">LED di confluenza multi-timeframe</strong> sia dal <strong style="color:var(--text)">segnale HFT</strong> mostrato a grafico, solo quando entrambi sono allineati e confermati. Riapre un nuovo trade solo dopo che il precedente si è chiuso, gestito dallo stesso motore di breakeven/trailing degli altri profili, rispettando un breve cooldown per evitare aperture a raffica. Resta disattivabile in qualsiasi momento con un click.
+        Due bottoni indipendenti — <strong style="color:var(--text)">AHFT BUY</strong> e <strong style="color:var(--text)">AHFT SELL</strong> — attivano lo <strong style="color:var(--text)">scalping automatico</strong> separatamente per direzione: il pannello apre un trade alla volta nel lato attivo, in base al <strong style="color:var(--text)">segnale HFT</strong> mostrato a grafico e, se il filtro <strong style="color:var(--text)">LED AHFT</strong> è acceso, anche alla conferma del <strong style="color:var(--text)">LED di confluenza multi-timeframe</strong>. Con LED AHFT spento, la direzione è determinata dal solo segnale HFT. Riapre un nuovo trade solo dopo che il precedente si è chiuso, gestito dallo stesso motore di breakeven/trailing degli altri profili, rispettando un breve cooldown per evitare aperture a raffica. Ogni bottone resta disattivabile in qualsiasi momento con un click, indipendentemente dall'altro.
       </p>
       <div style="display:flex;gap:2rem;flex-wrap:wrap;">
-        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff4db8;margin-bottom:4px;">Un trade alla volta</div><div style="font-size:0.8rem;color:var(--muted);">Non apre un nuovo trade finché quello in corso non si è chiuso</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff4db8;margin-bottom:4px;">BUY / SELL indipendenti</div><div style="font-size:0.8rem;color:var(--muted);">Puoi tenere acceso solo un lato, entrambi, o nessuno</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff4db8;margin-bottom:4px;">Max Mode</div><div style="font-size:0.8rem;color:var(--muted);">1 trade totale (i due lati condividono lo slot) oppure 1 BUY + 1 SELL indipendenti e simultanei</div></div>
         <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff4db8;margin-bottom:4px;">Cooldown</div><div style="font-size:0.8rem;color:var(--muted);">Attesa minima configurabile tra una chiusura e la successiva apertura</div></div>
         <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff4db8;margin-bottom:4px;">BE &amp; TS dedicati</div><div style="font-size:0.8rem;color:var(--muted);">Parametri di breakeven e trailing indipendenti, come per gli altri profili</div></div>
       </div>
+    </div>
+
+    <div class="sp-box">
+      <p class="section-label" style="color:#7ad4ff;margin-bottom:0.75rem;">Notifiche Push programmate</p>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">
+        Oltre alle notifiche legate ai trade, il pannello può inviare fino a <strong style="color:var(--text)">10 notifiche push a orario fisso</strong>, ognuna con orario e testo personalizzabili negli input. Ogni notifica parte <strong style="color:var(--text)">una sola volta al giorno</strong>, all'orario configurato — utile per promemoria ricorrenti come la chiusura imminente di una candela H4 o la riapertura dei mercati.
+      </p>
+      <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#7ad4ff;margin-bottom:4px;">10 slot orario/testo</div><div style="font-size:0.8rem;color:var(--muted);">Ogni slot ha un orario (vuoto = disattivato) e un messaggio testuale liberi</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#7ad4ff;margin-bottom:4px;">Un invio al giorno</div><div style="font-size:0.8rem;color:var(--muted);">Ogni slot si "resetta" a mezzanotte e può inviare una sola notifica per giornata</div></div>
+      </div>
+    </div>
+
+    <div class="stat-panel-box">
+      <p class="section-label" style="color:#ffc800;margin-bottom:0.75rem;">Pannello Statistiche Giornata</p>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;">
+        Il bottone <strong style="color:var(--text)">STAT</strong> mostra o nasconde un pannello dedicato accanto al dashboard principale, con il conteggio dei trade aperti nella giornata suddivisi per ciascun profilo — <strong style="color:var(--text)">HFT, AHFT, TRL, HSL, §, §TP, §SL, LF</strong> e i NoComm non taggati — oltre al totale delle modifiche a Stop Loss e Take Profit e al totale generale dei trade. Un colpo d'occhio rapido su cosa ha fatto il pannello durante la sessione, senza dover consultare lo storico ordini.
+      </p>
     </div>
 
     <div class="eq-box">
@@ -1734,7 +1812,7 @@
 
 <footer>
   <div class="footer-logo"><span>GPT</span> Trade Manager</div>
-  <p class="footer-sub" style="margin-bottom:0.75rem;">v1.40 — Copyright 2026 GPT Trading by theponz.eth</p>
+  <p class="footer-sub" style="margin-bottom:0.75rem;">v1.41 — Copyright 2026 GPT Trading by theponz.eth</p>
   <a href="https://gpttrading.info">gpttrading.info</a>
 </footer>
 <script>
