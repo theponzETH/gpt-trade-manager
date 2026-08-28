@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GPT Trade Manager v1.41 — by theponz.eth</title>
+<title>GPT Trade Manager v1.45 — by theponz.eth</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -1417,6 +1417,15 @@
       </div>
       <div class="feature-row">
         <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="10" width="18" height="4" rx="1"/><circle cx="7.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="16.5" cy="12" r="1.3"/></svg>
+          Selettore lotto compatto
+        </div>
+        <div class="feature-desc">
+          Ogni blocco a lottaggio multiplo — <strong>HFT, TRL, HSL, §, §TP, §SL</strong> — ora occupa <strong>una sola riga</strong>: bottone BUY, 5 micro-bottoni per scegliere la taglia attiva in stile radio (uno solo selezionabile alla volta), bottone SELL. Le 5 taglie configurabili restano esattamente le stesse di prima e la selezione resta impostata anche dopo un riavvio del terminale — cambia solo il modo di sceglierle, con un pannello sensibilmente più compatto.
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
           Aggiornamento live
         </div>
@@ -1430,7 +1439,7 @@
           Multi-simbolo
         </div>
         <div class="feature-desc">
-          I 5 slot <strong>SYM1–SYM5</strong> permettono di operare su simboli diversi dal grafico senza mai cambiare chart. Il pannello apre gli ordini sul simbolo selezionato e, in modalità <em>Pair THIS</em>, applica tutte le azioni solo a quel simbolo.
+          I 10 slot <strong>SYM1–SYM10</strong> permettono di operare su simboli diversi dal grafico senza mai cambiare chart. Il pannello apre gli ordini sul simbolo selezionato e, in modalità <em>Pair THIS</em>, applica tutte le azioni solo a quel simbolo.
         </div>
       </div>
       <div class="feature-row">
@@ -1543,7 +1552,7 @@
 
     <div class="controls-grid">
       <div class="ctrl-card">
-        <div class="ctrl-btn" style="background:rgba(180,100,255,0.12);color:#c084fc;border:1px solid rgba(180,100,255,0.25);">SYM1 – SYM5</div>
+        <div class="ctrl-btn" style="background:rgba(180,100,255,0.12);color:#c084fc;border:1px solid rgba(180,100,255,0.25);">SYM1 – SYM10</div>
         <div class="ctrl-title">Simboli custom</div>
         <div class="ctrl-desc">Seleziona il simbolo su cui operare. Il campo editabile sotto il bottone mostra il simbolo attivo. Il grafico può restare su un simbolo diverso.</div>
       </div>
@@ -1713,6 +1722,7 @@
         <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">LF LED</div><div style="font-size:0.8rem;color:var(--muted);">Filtro opzionale: apre un nuovo trade solo se il LED di confluenza MTF è a favore della direzione</div></div>
         <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">Close on Activate</div><div style="font-size:0.8rem;color:var(--muted);">Chiude il trade HFT aperto quando il pending seguito si attiva e diventa un trade di mercato</div></div>
         <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">Close on Cancel</div><div style="font-size:0.8rem;color:var(--muted);">Chiude il trade HFT aperto quando il pending seguito viene cancellato dal mercato</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ffc800;margin-bottom:4px;">Etichetta di stato</div><div style="font-size:0.8rem;color:var(--muted);">Indica esplicitamente quale lato è attivo — es. "LF: BUY (attivo)" o "LF: BUY+SELL (attivo)" — non più affidata al solo colore</div></div>
       </div>
     </div>
 
@@ -1760,8 +1770,8 @@
 <section>
   <div class="container">
     <p class="section-label">Multi-simbolo</p>
-    <h2 class="section-title">Operi su 5 simboli senza cambiare grafico</h2>
-    <p class="section-lead">I 5 slot SYM permettono di definire simboli personalizzati. Ogni slot ha un bottone di selezione e un campo di testo editabile. Il simbolo attivo è quello evidenziato — tutti i nuovi ordini vengono aperti su di esso.</p>
+    <h2 class="section-title">Operi su 10 simboli senza cambiare grafico</h2>
+    <p class="section-lead">I 10 slot SYM permettono di definire simboli personalizzati. Ogni slot ha un bottone di selezione e un campo di testo editabile. Il simbolo attivo è quello evidenziato — tutti i nuovi ordini vengono aperti su di esso.</p>
 
     <div class="sym-row">
       <div class="sym-pill active">AUDNZD.</div>
@@ -1769,6 +1779,11 @@
       <div class="sym-pill">GBPUSD.</div>
       <div class="sym-pill">XTIUSD.</div>
       <div class="sym-pill">BTCUSD.</div>
+      <div class="sym-pill">USDJPY.</div>
+      <div class="sym-pill">US30.</div>
+      <div class="sym-pill">XAUUSD.</div>
+      <div class="sym-pill">NAS100.</div>
+      <div class="sym-pill">ETHUSD.</div>
     </div>
 
     <div class="features-list">
@@ -1812,7 +1827,7 @@
 
 <footer>
   <div class="footer-logo"><span>GPT</span> Trade Manager</div>
-  <p class="footer-sub" style="margin-bottom:0.75rem;">v1.41 — Copyright 2026 GPT Trading by theponz.eth</p>
+  <p class="footer-sub" style="margin-bottom:0.75rem;">v1.45 — Copyright 2026 GPT Trading by theponz.eth</p>
   <a href="https://gpttrading.info">gpttrading.info</a>
 </footer>
 <script>
