@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GPT Trade Manager v1.45 — by theponz.eth</title>
+<title>GPT Trade Manager v1.51 — by theponz.eth</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -437,6 +437,12 @@
     margin-bottom: 2rem;
   }
 
+  /* ── PRICE TARGET ── */
+  .pt-box { background: rgba(255,240,160,0.05); border: 1px solid rgba(255,240,160,0.22); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; transition: box-shadow 0.3s; }
+  .pt-box:hover { box-shadow: 0 0 32px rgba(255,240,160,0.1), 0 0 0 1px rgba(255,240,160,0.3); }
+  /* ── BRK STRADDLE ── */
+  .brk-box { background: rgba(255,120,60,0.05); border: 1px solid rgba(255,120,60,0.22); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; transition: box-shadow 0.3s; }
+  .brk-box:hover { box-shadow: 0 0 32px rgba(255,120,60,0.1), 0 0 0 1px rgba(255,120,60,0.3); }
   /* ── FOOTER ── */
   footer {
     border-top: 1px solid var(--border);
@@ -1487,6 +1493,24 @@
           Fino a <strong>10 notifiche push a orario fisso</strong> configurabili negli input, ciascuna con il proprio testo — utili per promemoria come la chiusura di una candela H4 o l'orario di riapertura dei mercati. Ognuna parte una sola volta al giorno, all'orario impostato.
         </div>
       </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg>
+          Price Target — TP fittizio
+        </div>
+        <div class="feature-desc">
+          Scrivi un prezzo nella casella e attiva <strong>PT</strong>: il pannello apre e riapre trade <strong>verso quel prezzo</strong> (BUY se il target è sopra il mercato, SELL se è sotto) finché non viene raggiunto. A quel punto chiude tutto e <strong>si ferma da solo</strong>. Nessun segnale o LED richiesto, SL/BE/TS dedicati.
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-name">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18M12 3v18"/><path d="M7 7l-4 5 4 5M17 7l4 5-4 5"/></svg>
+          BRK — Volatility Straddle
+        </div>
+        <div class="feature-desc">
+          Un blocco autonomo che piazza <strong>un Buy Stop e un Sell Stop a cavallo del prezzo</strong> per catturare il breakout in qualunque direzione. Ha il proprio MagicNumber, il proprio bottone <strong>ARM / DISARM</strong> e un <strong>Trailing Stop indipendente</strong> da quello generale.
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1626,6 +1650,21 @@
         <div class="ctrl-title">Filtro LED per Limit Follow</div>
         <div class="ctrl-desc">Se attivo, Limit Follow apre un nuovo trade solo quando il LED di confluenza MTF conferma la direzione del pending seguito.</div>
       </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn" style="background:rgba(255,240,160,0.12);color:#fff0a0;border:1px solid rgba(255,240,160,0.3);">PT: ON/OFF</div>
+        <div class="ctrl-title">Price Target</div>
+        <div class="ctrl-desc">Con il prezzo scritto nella casella accanto, apre trade ripetuti verso quel target e si spegne da solo quando il mercato lo raggiunge. La direzione è fissata all'attivazione.</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-btn" style="background:rgba(255,120,60,0.14);color:#ff8a50;border:1px solid rgba(255,120,60,0.3);">BRK ARM / DISARM</div>
+        <div class="ctrl-title">Straddle di volatilità</div>
+        <div class="ctrl-desc">ARM piazza un Buy Stop e un Sell Stop a cavallo del prezzo; DISARM cancella i pendenti. Accanto, due etichette mostrano lo stato BUY/SELL e la distanza.</div>
+      </div>
+      <div class="ctrl-card wide">
+        <div class="ctrl-btn" style="background:rgba(255,120,60,0.14);color:#ff8a50;border:1px solid rgba(255,120,60,0.3);">BRK TS ON / OFF</div>
+        <div class="ctrl-title">Trailing del blocco BRK</div>
+        <div class="ctrl-desc">Trailing Stop proprio dello straddle, <strong style="color:var(--text)">indipendente</strong> dal bottone TS generale. Agisce solo sulle posizioni aperte dal blocco BRK (stesso MagicNumber), con soglia di attivazione e distanza dal prezzo propri, e puoi accenderlo o spegnerlo senza toccare il trailing degli altri trade.</div>
+      </div>
       <div class="ctrl-card wide">
         <div class="ctrl-btn btn-gray">STAT: SOLO EA / TUTTI</div>
         <div class="ctrl-title">Scope statistiche</div>
@@ -1757,6 +1796,32 @@
       </p>
     </div>
 
+    <div class="pt-box">
+      <p class="section-label" style="color:#fff0a0;margin-bottom:0.75rem;">Price Target — "TP fittizio"</p>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">
+        Non è un vero Take Profit lato broker, ma un <strong style="color:var(--text)">prezzo scritto da te</strong>. Appena attivi PT, la direzione viene fissata in base alla posizione del target rispetto al mercato: <strong style="color:var(--text)">target sopra → sempre BUY, target sotto → sempre SELL</strong>. Da quel momento il pannello apre un trade alla volta, riaprendo ogni volta che il precedente si chiude (dopo il cooldown), come un HFT dedicato ma senza bisogno di segnali o LED. Quando il prezzo <strong style="color:var(--text)">raggiunge il target</strong>, chiude l'eventuale trade ancora aperto e il bottone torna su OFF: un solo target attivo alla volta.
+      </p>
+      <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#fff0a0;margin-bottom:4px;">Casella prezzo</div><div style="font-size:0.8rem;color:var(--muted);">Scrivi il prezzo, premi Invio o clicca fuori, poi attiva PT: ON</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#fff0a0;margin-bottom:4px;">Stop Loss iniziale</div><div style="font-size:0.8rem;color:var(--muted);">SL in pips per ogni trade (0 = nessuno), più BE e TS dedicati</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#fff0a0;margin-bottom:4px;">Cooldown</div><div style="font-size:0.8rem;color:var(--muted);">Attesa minima tra la chiusura di un trade e la riapertura del successivo</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#fff0a0;margin-bottom:4px;">Chiudi alla disattivazione</div><div style="font-size:0.8rem;color:var(--muted);">Opzione: chiude il trade PT aperto se spegni il bottone a mano</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#fff0a0;margin-bottom:4px;">Etichetta di stato</div><div style="font-size:0.8rem;color:var(--muted);">Mostra direzione e prezzo target, oppure "in attesa prezzo…"</div></div>
+      </div>
+    </div>
+    <div class="brk-box">
+      <p class="section-label" style="color:#ff8a50;margin-bottom:0.75rem;">BRK — Volatility Straddle</p>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">
+        Piazza contemporaneamente un <strong style="color:var(--text)">Buy Stop</strong> e un <strong style="color:var(--text)">Sell Stop</strong> a cavallo del prezzo per catturare il breakout in qualsiasi direzione. È un blocco <strong style="color:var(--text)">completamente autonomo</strong> rispetto al resto del pannello: ha MagicNumber proprio, bottone ARM/DISARM proprio e un bottone <strong style="color:var(--text)">BRK TS</strong> indipendente dal TS generale. Lotto, modalità OCO e MagicNumber si configurano dagli input.
+      </p>
+      <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff8a50;margin-bottom:4px;">Distanza pendenti</div><div style="font-size:0.8rem;color:var(--muted);">Fissa in punti oppure dinamica: ATR × moltiplicatore (timeframe e periodo configurabili)</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff8a50;margin-bottom:4px;">Modalità OCO</div><div style="font-size:0.8rem;color:var(--muted);">Quando un lato scatta, cancella l'altro (breakout classico) oppure lascia attivi entrambi</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff8a50;margin-bottom:4px;">Scadenza pendenti</div><div style="font-size:0.8rem;color:var(--muted);">Durata in minuti dei pendenti (0 = nessuna scadenza)</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff8a50;margin-bottom:4px;">SL / TP / BE / TS</div><div style="font-size:0.8rem;color:var(--muted);">Stop Loss e Take Profit in punti, breakeven e trailing propri, con Spread Protection opzionale</div></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:11px;color:#ff8a50;margin-bottom:4px;">Margine di sicurezza</div><div style="font-size:0.8rem;color:var(--muted);">Buffer extra oltre StopLevel/FreezeLevel del broker, per evitare rifiuti degli ordini</div></div>
+      </div>
+    </div>
     <div class="eq-box">
       <p class="section-label" style="color:#ff6b6b;margin-bottom:0.75rem;">Equity Stop — Protezione conto</p>
       <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;">
@@ -1827,7 +1892,7 @@
 
 <footer>
   <div class="footer-logo"><span>GPT</span> Trade Manager</div>
-  <p class="footer-sub" style="margin-bottom:0.75rem;">v1.45 — Copyright 2026 GPT Trading by theponz.eth</p>
+  <p class="footer-sub" style="margin-bottom:0.75rem;">v1.51 — Copyright 2026 GPT Trading by theponz.eth</p>
   <a href="https://gpttrading.info">gpttrading.info</a>
 </footer>
 <script>
@@ -1937,7 +2002,7 @@ document.querySelectorAll('section').forEach((sec, si) => {
   const title   = sec.querySelector('.section-title');
   const lead    = sec.querySelector('.section-lead');
   const cards   = sec.querySelectorAll('.profile-card, .ctrl-card, .feature-row, .stat-item');
-  const other   = sec.querySelectorAll('.nocomm-cycle, .sym-row, .stats-bar, .altmagic-box, .eq-box, .lf-box, .ah-box');
+  const other   = sec.querySelectorAll('.nocomm-cycle, .sym-row, .stats-bar, .altmagic-box, .eq-box, .lf-box, .ah-box, .pt-box, .brk-box');
 
   [label, title, lead].forEach((el, i) => {
     if (el) { el.classList.add('reveal', 'reveal-delay-' + (i+1)); revealTargets.push(el); }
